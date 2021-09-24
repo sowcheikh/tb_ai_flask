@@ -1,0 +1,293 @@
+{%extends '/tableau-admin/admin.html' %}
+{% set active_page = "departement" %}
+{%block corps%}
+<script>
+    localStorage.clear()
+</script>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+            <h4 class="mt-0 header-title">Liste des départements</h4>
+                <p class="text-muted mb-4 font-14">
+                    <button data-toggle="modal" data-target="#ModalAjout" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i> Ajouter un département
+                    </button>
+                </p>
+                <table id="datatable-buttons-structure" class="table table-striped table-bordered w-100">
+                    <thead>
+                        <tr>
+                            <th>Nom Departement</th>
+                            <th>Responsable département</th>
+                            <th class="action">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                   {% for val in departements%}
+                            <tr>
+                                <td> {{ val.departement }}</td>
+                                <td> {{ val.responsable_departement }}</td>
+
+                                <td align="center" style="vertical-align: middle;">
+                                    <span data-toggle="tooltip" data-placement="top" title="Modifier">
+                                        <a href="#" data-toggle="modal" data-target="#Modifier" id="{{ val.id_departement }}" class="btn btn-secondary btn-round m-b-10 m-l-10 waves-effect waves-light icone-center modifier">
+                                            <i class="fa fa-edit" ></i>
+                                        </a>
+                                    </span>
+                                        {%if val.is_active==true%}
+                                            <span data-toggle="tooltip" data-placement="top" title="Bloquer">
+                                                <a href="#" data-toggle="modal" data-target="#Bloquer" id="{{ val.id_departement }}" class="btn btn-info btn-round m-b-10 m-l-10 waves-effect waves-light icone-center bloquers">
+                                                    <i class="fas fa-unlock"></i>
+                                                </a>
+                                            </span>
+                                        {%elif val.is_active==false%}
+                                            <span data-toggle="tooltip" data-placement="top" title="Débloquer">
+                                                <a href="#" data-toggle="modal" data-target="#Debloquer" id="{{ val.id_departement }}" class="btn btn-flickr btn-round m-b-10 m-l-10 waves-effect waves-light icone-center debloquers">
+                                                    <i class="fas fa-lock"></i>
+                                                </a>
+                                            </span>
+                                        {%endif%}
+                                        <span data-toggle="tooltip" data-placement="top" title="Supprimer">
+                                                <a href="#" data-toggle="modal" data-target="#Suppression" onclick="Suppression('{{val.id_departement}}')" class="btn btn-danger btn-round m-b-10 m-l-10 waves-effect waves-light icone-center">
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
+                                        </span>
+                                </td>
+                            </tr>
+                    {%endfor%}
+                   <script type="text/javascript">
+                       function Suppression(id){
+                                $('#supprimer').attr("href","/supprimer_dept/"+id)
+                            }
+                   </script>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="ModalAjout" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title mt-0" id="myLargeModalLabel">Ajouter un département</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{url_for('admin_dep.creation_departement')}}" method="POST">
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Nom département</label>
+                            <input type="text" class="form-control" name="departement" placeholder="Nom département" required autofocus>
+                        </div>
+                        <div class="col">
+                            <label class="mb-2 pb-1">Responsable département</label>
+                            <select class="select2 form-control mb-3 custom-select" name="responsable_departement" id="responsable" required="required">
+                                <option value="">Choisir le responsable</option>
+                                {% for val in auditeurs %}
+                                    <option value="{{val.id_auditeur}}">{{val.nom_auditeur}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                        <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light" >
+                            <i class="fas fa-plus-circle"></i> Ajouter
+                        </button>
+                        <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;">
+                            <i class="fas fa-times-circle"></i> Annuler
+                        </button>
+                    </div>
+                    </div>
+                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<div class="modal fade bs-example-modal-center" id="Modifier" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modification département</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{url_for('admin_dep.modification_departement')}}" method="POST">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Nom Département</label>
+                            <input type="hidden" class="form-control" name="id_departement" id="id_depart_modif">
+                            <input type="text" class="form-control" name="departement" id="nom_departement" required>
+                        </div>
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Responsable Département</label>
+                                <select class="select2 form-control mb-3 custom-select" name="responsable_departement" id="id_departement_modif" >
+                                </select>
+                        </div>
+                    </div>
+                    <div class="row"><h4></h4></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light" >
+                        <i class="fas fa-save"></i> Enregistrer
+                    </button>
+                    <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                        <i class="fas fa-times-circle"></i> Annuler
+                    </button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<div class="modal fade bs-example-modal-center" id="Bloquer" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="exampleModalLabel">Blocage du département</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 style="text-align: center;">Voulez-vous bloquer le département ?</h5>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="id_dep_bloquer" name="id_dep_input" >
+                <a type="button" class="btn btn-primary btn-lg waves-effect waves-light" id="bloquer">
+                    <i class="fas fa-lock"></i> Bloquer
+                </a>
+                <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                    <i class="fas fa-times-circle"></i> Annuler
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div>
+</div>
+<div class="modal fade bs-example-modal-center" id="Debloquer" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="exampleModalLabel">Déblocage du département</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 style="text-align: center;">Voulez-vous débloquer le département ?</h5>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="id_dep_debloquer" name="id_dep_input" >
+                <a type="button" class="btn btn-primary btn-lg waves-effect waves-light" id="debloquer">
+                    <i class="fas fa-unlock"></i> Débloquer
+                </a>
+                <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                    <i class="fas fa-times-circle"></i> Annuler
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div>
+</div>
+<div class="modal fade bs-example-modal-center" id="Suppression" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="exampleModalLabel">Suppression departement</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 style="text-align: center;">Voulez-vous supprimer le département ?</h5>
+            </div>
+            <div class="modal-footer">
+                <a id="supprimer" class="btn btn-primary btn-lg waves-effect waves-light" >
+                    <i class="fas fa-trash"></i> Supprimer
+                </a>
+                <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                    <i class="fas fa-times-circle"></i> Annuler
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+    <script>
+            $(document).ready(function (){
+
+                 $(".modifier").click(function (e) {
+             e.preventDefault();
+             let departement = document.getElementById('id_departement_modif')
+             const id_dep = $(this).attr('id')
+                 $("#id_depart_modif").val(id_dep)
+             // alert(id_dep)
+             $.ajax({
+                 url: "/modifier_dep" + id_dep,
+                 method: 'GET',
+                 success: function (response) {
+
+                     let data = response[0]
+                     let dep = data.departements[0]
+                     console.log(dep)
+                     let infos = data.infos
+                     $('#nom_departement').val(dep['departement'])
+                        $.each(infos, function (index, item) {
+                            if (index === 0) {
+                                departement.innerHTML = `<option value="">Choisir responsable</option>`
+                                departement.innerHTML += `<option  ${item['id_auditeur'] === dep["responsable_departement"] ?'selected':''} value="${item['id_auditeur'] }">${item['nom_auditeur'] }</option>`
+                            } else {
+                                departement.innerHTML += `<option  ${item['id_auditeur'] === dep["responsable_departement"] ?'selected':''} value="${item['id_auditeur'] }">${item['nom_auditeur'] }</option>`
+                            }
+
+                        })
+                 }
+             })
+         })
+
+                 $(".bloquers").click(function (e) {
+                     e.preventDefault()
+                     let idDep = $(this).attr('id')
+                     $("#id_dep_bloquer").val(idDep)
+                 })
+
+                $(".debloquers").click(function (e) {
+                     e.preventDefault()
+                     let idDep = $(this).attr('id')
+                     $("#id_dep_debloquer").val(idDep)
+                 })
+
+                $("#debloquer").click(function (e) {
+                    e.preventDefault()
+                    let idDep = $("#id_dep_debloquer").val()
+                    $.ajax({
+                        url: '/debloquer_dept'+idDep,
+                        method: 'GET',
+                        success: function (response) {
+                            //$("#").modal('hide');
+                            location.reload();
+
+                        }
+                    })
+                })
+
+
+                $("#bloquer").click(function (e) {
+                    e.preventDefault()
+                    let idDep = $("#id_dep_bloquer").val()
+                    $.ajax({
+                        url: '/bloquer_dept'+idDep,
+                        method: 'GET',
+                        success: function (response) {
+                            //$("#").modal('hide');
+                            location.reload();
+                        }
+                    })
+                })
+            })
+    </script>
+{%endblock%}

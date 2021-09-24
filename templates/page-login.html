@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color: white;">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+        <title>Tableau de bord des missions d'audit</title>
+        <meta content="Admin Dashboard" name="description" />
+        <meta content="Mannatthemes" name="author" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+        <link rel="shortcut icon" href="{{url_for('static', filename='assets/images/favicon.ico')}}">
+
+        <link href="{{url_for('static', filename='assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css">
+        <link href="{{url_for('static', filename='assets/css/icons.css')}}" rel="stylesheet" type="text/css">
+        <link href="{{url_for('static', filename='assets/css/style.css')}}" rel="stylesheet" type="text/css">
+
+    </head>
+    <body style="background-color: white;">
+        <script>
+            localStorage.clear()
+        </script>
+        <!-- Begin page -->
+        <div class="wrapper-page">
+            <h5 style="text-align: center;margin-left: 10px;margin-right: 18px; color: #ee7627;">Tableau de bord</h5>
+            <p class="text-muted mb-4 font-14"></p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center mt-2 mb-4">
+                        <a class="logo logo-admin"><h1 style="color: #328f8e;">Sonatel</h1></a>
+                    </div>
+                    <div class="px-3 pb-3">
+                        <form class="form-horizontal m-t-20" method="POST">
+
+                            {#<div class="form-group row">
+                                <div class="col-12">
+                                    <select class="form-control" name="entite" required>
+                                        <option value="">Choisir l'entité</option>
+                                        {% for val in entites %}
+                                            <option value="{{val.id_entite}}">{{val.entite}}</option>
+                                        {% endfor %}
+                                    </select>                                
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <input class="form-control" type="password" name= "code" required placeholder="code d'accès">
+                                </div>
+                            </div>#}
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <input class="form-control" type="email" name= "login" required placeholder="Entrez votre email">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <input class="form-control" type="password" name= "password" required placeholder="Mot de passe">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-12">     
+                                </div>
+                            </div>
+
+                            <div class="form-group text-center row m-t-20">
+                                <div class="col-12">
+                                    <button class="btn btn-primary btn-block waves-effect waves-light" type="submit"><i class="fa fa-fas fa-sign-in-alt"></i> Se connecter</button>
+                                </div>
+                            </div>
+
+                            <div class="form-group m-t-10 mb-0 row">   
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- jQuery  -->
+        <script src="{{url_for('static', filename='assets/js/jquery.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/js/popper.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/js/bootstrap.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/js/modernizr.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/js/waves.js')}}"></script>
+        <!-- App js -->
+        <script src="{{url_for('static', filename='assets/js/app.js')}}"></script>
+        <script src="/static/assets/js/jquery.bootstrap-growl.min.js"></script>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category=="danger" %}     
+                        <script>
+                            setTimeout(function() {
+                                $.bootstrapGrowl("{{message}}", {
+                                    type: 'danger',
+                                    position:"top",
+                                    align: 'center',
+                                    width:"auto"
+                                });
+                            }, 500);
+                        </script>       
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </body>
+</html>

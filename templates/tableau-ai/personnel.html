@@ -1,0 +1,463 @@
+{%extends '/tableau-ai/accueil.html'%}
+{% set active_page = "missions" %}
+{%block corps%} 
+<script type="text/javascript">
+    localStorage.clear()
+</script> 
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mt-0 header-title">Liste des personnels AI</h4>
+                <p class="text-muted mb-4 font-14">
+                    <button data-toggle="modal" data-target="#ModalAjout" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i> Ajouter un personnel
+                    </button>
+                </p>
+                <table id="datatable-buttons-agent" class="table table-striped table-bordered w-100">
+                    <thead>
+                        <tr>
+                            <th>Prénom(s) et Nom</th>
+                            <th>Nbre jour formation</th>
+                            <th>Promotion</th>
+                            <th>Date d'entrée</th>
+                            <th>Date de sortie</th>
+                            <th>Fonction</th>
+                            <th>Diplôme(s)</th>
+                            <th>Certification(s)</th>
+                            <th>Entité</th>
+                            <th class="action">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for val in agents %}
+                            <tr>
+                                <td>{{val.nom_auditeur}}</td>
+                                <td>
+                                    {% if val.nbre_jour_formation != None %}
+                                    {{val.nbre_jour_formation}}
+                                    {%endif%}
+                                </td>
+                                <td>
+                                    {% if val.promotion != None %}
+                                        {{val.promotion.strftime('%d/%m/%Y')}}
+                                    {%endif%}
+                                </td>
+                                <td>
+                                    {% if val.date_entree != None %}
+                                    {{val.date_entree.strftime('%d/%m/%Y')}}
+                                    {%endif%}
+                                </td>
+                                <td>
+                                    {% if val.date_sortie != None %}
+                                    {{val.date_sortie.strftime('%d/%m/%Y')}}
+                                    {%endif%}
+                                </td>
+                                <td>{{val.fonction}}</td>
+                                <td>
+                                    <pre class="format-pre">{{val.diplomes.replace('<br>','\n')}}</pre>
+                                </td>
+                                <td>
+                                    <pre class="format-pre">{{val.certifications.replace('<br>','\n')}}</pre>
+                                </td>
+                                <td>{{val.entite}}</td>
+                                <td align="center" style="vertical-align: middle;">
+                                    <span data-toggle="tooltip" data-placement="top" title="Détails">
+                                        <a href="#" data-toggle="modal" data-target="#Details" onclick="Affichage('{{val.id_auditeur}}')" class="btn btn-primary btn-round m-b-10 m-l-10 waves-effect waves-light icone-center">  
+                                            <i class="fa fa-book"></i>
+                                        </a>
+                                    </span>
+                                    <span data-toggle="tooltip" data-placement="top" title="Modifier">
+                                        <a href="#" data-toggle="modal" data-target="#Modifier" onclick="Modification('{{val.id_auditeur}}')" class="btn btn-secondary btn-round m-b-10 m-l-10 waves-effect waves-light icone-center">  
+                                            <i class="fa fa-edit" ></i>
+                                        </a>
+                                    </span>  
+                                    {%if val.id_auditeur!=1%}
+                                        {%if val.activite==true%}
+                                            <span data-toggle="tooltip" data-placement="top" title="Bloquer">
+                                                <a href="#" data-toggle="modal" data-target="#Bloquer" onclick="Blocage('{{val.id_auditeur}}')" class="btn btn-info btn-round m-b-10 m-l-10 waves-effect waves-light icone-center">
+                                                    <i class="fas fa-unlock"></i>
+                                                </a>  
+                                            </span> 
+                                        {%elif val.activite==false%}
+                                            <span data-toggle="tooltip" data-placement="top" title="Débloquer">
+                                                <a href="#" data-toggle="modal" data-target="#Debloquer" onclick="Deblocage('{{val.id_auditeur}}')" class="btn btn-flickr btn-round m-b-10 m-l-10 waves-effect waves-light icone-center">
+                                                    <i class="fas fa-lock"></i>
+                                                </a>  
+                                            </span>
+                                        {%endif%}                                   
+                                        <span data-toggle="tooltip" data-placement="top" title="Supprimer">
+                                            <a href="#" data-toggle="modal" data-target="#Suppression" onclick="Suppression('{{val.id_auditeur}}')" class="btn btn-danger btn-round m-b-10 m-l-10 waves-effect waves-light icone-center">
+                                                <i class="fa fa-trash"></i>
+                                            </a>  
+                                        </span>
+                                    {%endif%}
+                                </td>
+                            </tr>
+                            <script type="text/javascript">
+                                function Suppression(id){
+                                    $('#supprimer').attr("href","/suppressions/"+id)
+                                }
+                                function Deblocage(id){
+                                    $('#debloquer').attr("href","/deblocage/"+id)
+                                }
+                                function Blocage(id){
+                                    $('#bloquer').attr("href","/blocage/"+id)
+                                }
+                                function Affichage(id){
+                                    var x = JSON.parse(localStorage.getItem('personnel'+id));
+                                    $('#nom_details').html(FormatEncodage(x[0].nom_auditeur))
+                                    if(x[0].nbre_jour_formation !== "None"){
+                                        $('#nbre_jour_formation_details').html(x[0].nbre_jour_formation)
+                                    }
+                                    
+                                    if(x[0].promotion !== "None"){
+                                        $('#promotion_details').html(formatDate(x[0].promotion))
+                                    }
+                                    else{
+                                        $('#promotion_details').html()
+                                    }
+                                    if(x[0].date_entree !== "None"){
+                                        $('#date_entree_details').html(formatDate(x[0].date_entree))
+                                    }
+                                    else{
+                                        $('#date_entree_details').html()
+                                    }
+
+                                    if(x[0].date_sortie !== "None"){
+                                        $('#date_sortie_details').html(formatDate(x[0].date_sortie))
+                                    }
+                                    else{
+                                        $('#date_sortie_details').html()
+                                    }
+                                    $('#fonction_details').html(FormatEncodage(x[0].fonction))
+                                    $('#diplomes_details').html('<pre class="format-pre">'+FormatEncodage(x[0].diplomes)+'</pre>')
+                                    $('#certifications_details').html('<pre class="format-pre">'+FormatEncodage(x[0].certifications)+'</pre>')
+                                    $('#entite_details').html(FormatEncodage(x[0].entite))
+                                }
+                                function Modification(id){
+                                    var x = JSON.parse(localStorage.getItem('personnel'+id));
+                                    $('#id_auditeur').val(x[0].id_auditeur)
+                                    $('#nom_auditeur_modif').val(x[0].nom_auditeur)
+                                    
+                                    $('#id_entite_modif option[value='+x[0].id_entite+']').attr('selected','selected')
+                                    $('#fonction_modif option[value='+FormatFonction(x[0].fonction)+']').attr('selected','selected')
+                                    $('#nbre_jour_formation_modif').val(x[0].nbre_jour_formation)
+                                    $('#promotion_modif').val(x[0].promotion)
+                                    $('#date_entree_modif').val(x[0].date_entree)
+                                    $('#date_sortie_modif').val(x[0].date_sortie)
+                                    $('#diplomes_modif').val(FormatEncodage(x[0].diplomes))
+                                    $('#certifications_modif').val(FormatEncodage(x[0].certifications))
+                                    $('#entite_modif').val(FormatEncodage(x[0].entite))
+                                }
+
+                                var selected = [{"id_auditeur":"{{val.id_auditeur}}","statut":"{{val.statut}}",
+                                                "nom_auditeur":"{{val.nom_auditeur}}","nbre_jour_formation":"{{val.nbre_jour_formation}}",
+                                                "promotion":"{{val.promotion}}","date_entree":"{{val.date_entree}}",
+                                                "date_sortie":"{{val.date_sortie}}","fonction":"{{val.fonction}}",
+                                                "diplomes":"{{val.diplomes}}","certifications":"{{val.certifications}}",
+                                                "id_entite":"{{val.id_entite}}","entite":"{{val.entite}}"
+                                                }];                                                     
+                                localStorage.setItem("personnel{{val.id_auditeur}}", JSON.stringify(selected))
+                            </script>
+                        {% endfor %} 
+                    </tbody>
+                </table>
+                <div class="modal fade bs-example-modal-lg" id="ModalAjout" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title mt-0" id="myLargeModalLabel">Ajouter un personnel</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{url_for('agent.ajout_personnels')}}" method="POST">
+                                    <div class="row">
+                                        <div class="col">
+                                            <label class="mb-2 pb-1">Prénom(s) et Nom</label>
+                                            <input type="text" class="form-control" name="nom_auditeur" required>
+                                        </div>
+                                        <div class="col">
+                                            <label class="mb-2 pb-1">Compte windows</label>
+                                            <input type="email" class="form-control" name="login" required>
+                                        </div>
+                                        <div class="col">
+                                            <label class="mb-2 pb-1">Fonction</label>
+                                            <select class="form-control" name="fonction" required>
+                                                <option value="">Choisir une fonction</option>
+                                                {%for val in fonctions%}
+                                                    <option value="{{val.id_fonction}}">{{val.libelle}}</option>
+                                                {%endfor%}
+                                            </select>
+                                        </div> 
+                                    </div>
+                                    <div class="row"><h4></h4></div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <label class="mb-2 pb-1">Entité</label>
+                                            <select class="form-control" name="id_entite" required>
+                                                <option value="">Choisir l'entité</option>
+                                                {%for val in liste_entite%}
+                                                    <option value="{{val.id_entite}}">{{val.entite}}</option>  
+                                                {%endfor%}
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <label class="mb-2 pb-1">Nombre de jour de formation</label>
+                                            <input type="number" class="form-control" id="nbre_jour_formation" name="nbre_jour_formation" step="any">
+                                        </div>
+                                    </div>
+                                    <div class="row"><h4></h4></div>
+                                    <div class="row"> 
+                                        <div class="col">
+                                            <label class="mb-2 pb-1">Promotion</label>
+                                            <input type="date" class="form-control" id="promotion" name="promotion">                      
+                                        </div>      
+                                        <div class="col">
+                                            <label class="mb-2 pb-1">Date d'entrée</label>
+                                            <input type="date" class="form-control" id="date_entree" name="date_entree">
+                                        </div> 
+                                        <div class="col">
+                                            <label class="mb-2 pb-1">Date de sortie</label>
+                                            <input type="date" class="form-control" id="date_sortie" name="date_sortie">
+                                        </div> 
+                                    </div>
+                                    <div class="row"><h4></h4></div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <label class="mb-2 pb-1">Diplôme(s)</label>
+                                            <textarea class="form-control" id="diplomes" name="diplomes" rows="5" required></textarea>                        
+                                        </div>
+                                        <div class="col">
+                                            <label class="mb-2 pb-1">Certification(s)</label>
+                                            <textarea class="form-control" id="certifications" name="certifications" rows="5"></textarea>                        
+                                        </div>
+                                    </div>
+                                    <div class="row"><h4></h4></div>
+                                    <div class="row">
+                                        <div class="col">
+                                        <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light" >
+                                            <i class="fas fa-user-plus"></i> Ajouter
+                                        </button>&nbsp;
+                                        <button type="button" class="btn btn-secondary btn-lg waves-effect" data-dismiss="modal"><i class="fa fa-times-circle"></i> Annuler</button>
+                                    </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bs-example-modal-center" id="Suppression" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="exampleModalLabel">Suppression de l'agent</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 style="text-align: center;">Voulez-vous supprimer l'agent ?</h5>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-primary btn-lg waves-effect waves-light" id="supprimer" >
+                    <i class="fas fa-trash"></i> Supprimer
+                </a>
+                <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                    <i class="fas fa-times-circle"></i> Annuler
+                </button>            
+            </div>
+        </div><!-- /.modal-content -->
+    </div>
+</div>
+
+<div class="modal fade bs-example-modal-center" id="Bloquer" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="exampleModalLabel">Blocage de l'agent</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 style="text-align: center;">Voulez-vous bloquer l'agent ?</h5>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-primary btn-lg waves-effect waves-light" id="bloquer">
+                    <i class="fas fa-lock"></i> Bloquer
+                </a>
+                <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                    <i class="fas fa-times-circle"></i> Annuler
+                </button>            
+            </div>
+        </div><!-- /.modal-content -->
+    </div>
+</div>
+<div class="modal fade bs-example-modal-center" id="Debloquer" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="exampleModalLabel">Déblocage de l'agent</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 style="text-align: center;">Voulez-vous débloquer l'agent ?</h5>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-primary btn-lg waves-effect waves-light" id="debloquer">
+                    <i class="fas fa-unlock"></i> Débloquer
+                </a>
+                <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                    <i class="fas fa-times-circle"></i> Annuler
+                </button>            
+            </div>
+        </div><!-- /.modal-content -->
+    </div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="Details" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title mt-0" id="myLargeModalLabel">Détails du personnel</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td colspan="2" style="text-align: center;background-color: #ee7627;color: white;">
+                                <strong id="nom_details"></strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Nombre de jour de formation</th>
+                            <td id="nbre_jour_formation_details"></td>    
+                        </tr>
+                        <tr>
+                            <th scope="row">Promotion</th>
+                            <td id="promotion_details"></td>    
+                        </tr>
+                        <tr>
+                            <th scope="row">Date d'entrée</th>
+                            <td id="date_entree_details"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Date de sortie</th>
+                            <td id="date_sortie_details"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Fonction</th>
+                            <td id="fonction_details"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Diplôme(s)</th>
+                            <td id="diplomes_details"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Certification(s)</th>
+                            <td id="certifications_details"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Entité</th>
+                            <td id="entite_details"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal"><i class="fa fa-times-circle"></i> Fermer</button>
+            </div>
+        </div>
+    </div>
+</div> 
+
+<div class="modal fade bs-example-modal-lg" id="Modifier" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title mt-0" id="myLargeModalLabel">Modification personnel</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <form action="{{url_for('agent.modification_personnels')}}" method="POST">
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Prénom(s) et Nom</label>
+                            <input type="hidden" class="form-control" id="id_auditeur" name="id_auditeur">
+                            <input type="text" class="form-control" name="nom_auditeur_modif" id="nom_auditeur_modif" required>
+                        </div> 
+                        <div class="col">
+                            <label class="mb-2 pb-1">Fonction</label>
+                            <select class="form-control" name="fonction_modif" id="fonction_modif" required>
+                                <option value="">Choisir une fonction</option>
+                                {%for val in fonctions%}
+                                    <option value="{{val.id_fonction}}">{{val.libelle}}</option>
+                                {%endfor%}
+                            </select>
+                        </div> 
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Entité</label>
+                            <select class="form-control" name="id_entite_modif" id="id_entite_modif" required>
+                                <option value="">Choisir l'entité</option>
+                                {%for val in liste_entite%}
+                                    <option value="{{val.id_entite}}">{{val.entite}}</option>  
+                                {%endfor%}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label class="mb-2 pb-1">Nombre de jour de formation</label>
+                            <input type="number" class="form-control" id="nbre_jour_formation_modif" name="nbre_jour_formation_modif" step="any">
+                        </div>
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">  
+                        <div class="col">
+                            <label class="mb-2 pb-1">Promotion</label>
+                            <input type="date" class="form-control" id="promotion_modif" name="promotion_modif">                      
+                        </div>     
+                        <div class="col">
+                            <label class="mb-2 pb-1">Date d'entrée</label>
+                            <input type="date" class="form-control" id="date_entree_modif" name="date_entree_modif">
+                        </div> 
+                        <div class="col">
+                            <label class="mb-2 pb-1">Date de sortie</label>
+                            <input type="date" class="form-control" id="date_sortie_modif" name="date_sortie_modif">
+                        </div> 
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Diplôme(s)</label>
+                            <textarea class="form-control" id="diplomes_modif" name="diplomes_modif" required rows="5"></textarea>                        
+                        </div>
+                        <div class="col">
+                            <label class="mb-2 pb-1">Certification(s)</label>
+                            <textarea class="form-control" id="certifications_modif" name="certifications_modif" rows="5"></textarea>                        
+                        </div>
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                        <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light" >
+                            <i class="fas fa-save"></i> Enregistrer
+                        </button>&nbsp;
+                        <button type="button" class="btn btn-secondary btn-lg waves-effect" data-dismiss="modal"><i class="fa fa-times-circle"></i> Annuler</button>
+                    </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock%}

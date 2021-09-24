@@ -1,0 +1,327 @@
+{%extends '/tableau-ai/accueil.html'%}
+{% set active_page = "missions" %}
+{%block corps%}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mt-0 header-title">Compétences</h4>
+                <p class="text-muted mb-4 font-14">
+                    <button data-toggle="modal" data-target="#ModalAjout" id="ajout" class="btn btn-primary" >
+                        <i class="fas fa-plus-circle"></i> Ajouter
+                    </button>
+                </p>
+                <table id="datatable-buttons-structure" class="table table-striped table-bordered w-100">
+                    <thead>
+                        <tr>
+                            <th>Competence & Connaissances audit interne Sonatel</th>
+                            <th>Comp / CNCE / IT</th>
+                            <th>Thématique</th>
+                            <th class="action">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for val in liste_competence%}
+                            <tr>
+                                <td>{{val.competence}}</td>
+                                <td>{{val.comp_cnce_it}}</td>
+                                <td>{{val.thematique}}</td>
+                                <td align="center" style="vertical-align: middle;">
+                                  {#  <span data-toggle="tooltip" data-placement="top" title="Changer le code">
+                                        <a href="#" data-toggle="modal" data-target="#ModifierCode" onclick="ModificationCode('{{val.id_thematique}}')" class="btn btn-primary btn-round m-b-10 m-l-10 waves-effect waves-light icone-center">
+                                            <i class="fa fa-key" ></i>
+                                        </a>
+                                    </span>#}
+                                    <span data-toggle="tooltip" data-placement="top" title="Modifier">
+                                        <a href="#" data-toggle="modal" data-target="#Modifier" id="{{val.id_competence}}" class="btn btn-secondary btn-round m-b-10 m-l-10 waves-effect waves-light icone-center modifier">
+                                            <i class="fa fa-edit" ></i>
+                                        </a>
+                                    </span>
+                                    <span data-toggle="tooltip" data-placement="top" title="Supprimer">
+                                        <a href="#" data-toggle="modal" data-target="#Suppression" id="{{val.id_competence}}" class="btn btn-danger btn-round m-b-10 m-l-10 waves-effect waves-light icone-center supprimer">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </span>
+                                    {%if val.is_active==true%}
+                                            <span data-toggle="tooltip" data-placement="top" title="Bloquer">
+                                                <a href="#" data-toggle="modal" data-target="#Bloquer" id="{{ val.id_competence }}" class="btn btn-info btn-round m-b-10 m-l-10 waves-effect waves-light icone-center bloquers">
+                                                    <i class="fas fa-unlock"></i>
+                                                </a>
+                                            </span>
+                                        {%elif val.is_active==false%}
+                                            <span data-toggle="tooltip" data-placement="top" title="Débloquer">
+                                                <a href="#" data-toggle="modal" data-target="#Debloquer" id="{{ val.id_competence }}" class="btn btn-flickr btn-round m-b-10 m-l-10 waves-effect waves-light icone-center debloquers">
+                                                    <i class="fas fa-lock"></i>
+                                                </a>
+                                            </span>
+                                        {%endif%}
+                                </td>
+                            </tr>
+                        {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div>
+<div class="modal fade bs-example-modal-center" id="ModalAjout" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ajouter une thématique</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{url_for('carto.ajout_competence')}}" method="POST">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Compétence</label>
+                            <input type="text" class="form-control" name="libelle_competence" required autofocus>
+                        </div>
+                    </div>
+                </div>
+                 <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Comp / CNCE / IT</label>
+                             <select class="form-control" name="comp_cnce_it" required>
+                                <option value="">Choisir le type de compétence</option>
+                                    <option value="COMP">COMP</option>
+                                    <option value="CNCE">CNCE</option>
+                                    <option value="IT">IT</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                 <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Thématique</label>
+                            <select class="select2 form-control mb-3 custom-select" name="id_thematique" id="id_thematique" required="required">
+                                <option value="">Choisir le thématique</option>
+                                {% for val in liste_competence %}
+                                    <option value="{{val.id_thematique}}">{{val.thematique}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row"><h4></h4></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light" >
+                        <i class="fas fa-plus-circle"></i> Ajouter
+                    </button>
+                    <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                        <i class="fas fa-times-circle"></i> Annuler
+                    </button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade bs-example-modal-center" id="Modifier" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modification thématique</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{url_for('carto.modification_competence')}}" method="POST">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Nom Compétence</label>
+                            <input type="hidden" class="form-control" name="id_competence" id="comp_modif">
+                            <input type="text" class="form-control" name="libelle_competence" id="competence_modif" required autofocus>
+                        </div>
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Comp / CNCE / IT</label>
+                             <select class="form-control" name="comp_cnce_it" id="type_comp" required>
+                                <option value="">Choisir le type de compétence</option>
+                                    <option value="COMP">COMP</option>
+                                    <option value="CNCE">CNCE</option>
+                                    <option value="IT">IT</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row"><h4></h4></div>
+                       <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Thématique</label>
+                            <select class="select2 form-control mb-3 custom-select" name="id_thematique" id="id_thematique_modif" required="required">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light" >
+                        <i class="fas fa-save"></i> Enregistrer
+                    </button>
+                    <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                        <i class="fas fa-times-circle"></i> Annuler
+                    </button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<div class="modal fade bs-example-modal-center" id="Bloquer" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="exampleModalLabel">Blocage de compétence</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 style="text-align: center;">Voulez-vous bloquer la compétence ?</h5>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="id_comp_bloquer" name="id_them_input" >
+                <a type="button" class="btn btn-primary btn-lg waves-effect waves-light" id="bloquer">
+                    <i class="fas fa-lock"></i> Bloquer
+                </a>
+                <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                    <i class="fas fa-times-circle"></i> Annuler
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div>
+</div>
+<div class="modal fade bs-example-modal-center" id="Debloquer" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="exampleModalLabel">Déblocage de compétence</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 style="text-align: center;">Voulez-vous débloquer le compétence ?</h5>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="id_comp_debloquer" name="id_comp_input" >
+                <a type="button" class="btn btn-primary btn-lg waves-effect waves-light" id="debloquer">
+                    <i class="fas fa-unlock"></i> Débloquer
+                </a>
+                <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                    <i class="fas fa-times-circle"></i> Annuler
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div>
+</div>
+<div class="modal fade bs-example-modal-center" id="Suppression" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="exampleModalLabel">Suppression entité</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 style="text-align: center;">Voulez-vous supprimer la compétence ?</h5>
+            </div>
+            <div class="modal-footer">
+                <a id="supprimer" class="btn btn-primary btn-lg waves-effect waves-light" >
+                    <i class="fas fa-trash"></i> Supprimer
+                </a>
+                <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                    <i class="fas fa-times-circle"></i> Annuler
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<script>
+    $(document).ready(function () {
+        $(".modifier").click(function (e) {
+            e.preventDefault()
+            const idComp = $(this).attr('id')
+            $('#comp_modif').val(idComp)
+            let thematiq = document.getElementById('id_thematique_modif');
+            // alert(idComp)
+            $.ajax({
+                method: 'GET',
+                url: '/modif_comp' + idComp,
+                success: function (response) {
+                    //console.log(response)
+                    let data = response[0]
+                    let comp = data.competence[0]
+                    let thema = data.thematique
+                    console.log(comp.id_thematique)
+                    //console.log(data)
+                     $('#competence_modif').val(data.competence[0]['competence'])
+                     $('#type_comp').val(data.competence[0]['type_comp'])
+
+                     $.each(thema, function (index, item) {
+                            if (index === 0) {
+                                thematiq.innerHTML = `<option value="">Choisir un thématique</option>`
+                                thematiq.innerHTML += `<option  ${item.id_thematique === comp.id_thematique ?'selected':''} value="${item.id_thematique }">${item.thematique }</option>`
+                            } else {
+                                thematiq.innerHTML += `<option  ${item.id_thematique === comp.id_thematique ?'selected':''} value="${item.id_thematique }">${item.thematique }</option>`
+                            }
+
+                        })
+
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+        })
+
+        $(".bloquers").click(function (e) {
+             e.preventDefault()
+             let idComp = $(this).attr('id')
+             $("#id_comp_bloquer").val(idComp)
+         })
+
+        $(".debloquers").click(function (e) {
+             e.preventDefault()
+             let idComp = $(this).attr('id')
+             $("#id_comp_debloquer").val(idComp)
+         })
+
+        $("#debloquer").click(function (e) {
+            e.preventDefault()
+            let idComp_debloq = $("#id_comp_debloquer").val()
+            $.ajax({
+                url: '/debloquer_comp'+idComp_debloq,
+                method: 'GET',
+                success: function (response) {
+                    console.log('response ===>', response)
+                    //$("#").modal('hide');
+                    location.reload();
+
+                }
+            })
+        })
+
+
+        $("#bloquer").click(function (e) {
+            e.preventDefault()
+            let idComp = $("#id_comp_bloquer").val()
+            $.ajax({
+                url: '/bloquer_comp'+idComp,
+                method: 'GET',
+                success: function (response) {
+                    //$("#").modal('hide');
+                    location.reload();
+                }
+            })
+        })
+    })
+    </script>
+{%endblock%}

@@ -1,0 +1,258 @@
+{%extends '/tableau-cr/accueil_cr.html'%} 
+{% set active_page = "rapport" %}
+{%block corps%} 
+<script>
+    localStorage.clear()
+</script>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mt-0 header-title">Rapports {{entite}}</h4>
+                <p class="text-muted mb-4 font-14"></p>
+                <form action="{{url_for('rapp_cr.liste_rapport_cr')}}" method="POST">
+                    <div class="form-group row justify-content-center" >
+                        <label for="example-week-input" class="col-sm-0 col-form-label">Date :</label>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <input class="form-control" type="date" name="date_jour" value="{{day}}" id="date_jour">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary waves-effect waves-light" type="submit" style="background-color: #ee7627;color: white;">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </form>
+                <table id="datatable-buttons-rapport-ai" class="table table-striped table-bordered w-100">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Mission</th>
+                        <th>Constats</th>
+                        <th>Causes / Risques</th>
+                        <th>Recommandations</th>
+                        <th>Rapport</th>
+                        <th class="action">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for val in rapports_all %}
+                            <tr>
+                                <td>
+                                    {% if val.date!=None %}
+                                        {{val.date.strftime('%d/%m/%Y %H:%M')}}
+                                    {%endif%}
+                                </td>
+                                <td>{{val.intitule_mission}}</td>
+                                <td>
+                                    <pre class="format-pre">{{val.constats.replace('<br>','\n')}}</pre>
+                                </td>
+                                <td>
+                                    <pre class="format-pre">{{val.causes.replace('<br>','\n')}}</pre>
+                                </td>
+                                <td>
+                                    <pre class="format-pre">{{val.recommandations.replace('<br>','\n')}}</pre>
+                                </td>
+                                <td>
+                                    {% if val.rapport %}
+                                        <a href="{{url_for('download',filename=val.rapport)}}" target="_blank"><i class="mdi mdi-file"></i>{{val.rapport}}</a>
+                                    {% endif %}
+                                </td>
+                                <td align="center" style="vertical-align: middle;" id="action{{val.id_rapport}}">
+                                    {% if val.constats!="" and val.rapport!=""%}
+                                        <span data-toggle="tooltip" data-placement="top" title="Modifier" id="modif{{val.id_rapport}}">
+                                            <a href="#" data-toggle="modal" data-target="#Modifier" onclick="Modification('{{val.id_rapport}}')" class="btn btn-secondary btn-round m-b-10 m-l-10 waves-effect waves-light icone-center">  
+                                                <i class="fa fa-edit" ></i>
+                                            </a>
+                                        </span> 
+                                        <span data-toggle="tooltip" data-placement="top" title="Supprimer">
+                                            <a href="#" data-toggle="modal" data-target="#Suppression" onclick="Suppression('{{val.id_rapport}}')" class="btn btn-danger btn-round m-b-10 m-l-10 waves-effect waves-light icone-center">
+                                                <i class="fa fa-trash"></i>
+                                            </a>  
+                                        </span>
+                                    {%endif%}
+                                </td>
+                            </tr>
+                            <script type="text/javascript">
+                                $(document).ready(function() {
+                                    if("{{liste_rapport_max_by_id[val.id_mission]}}" === "{{val.id_rapport}}"){
+                                        $('#modif{{val.id_rapport}}').before('<span data-toggle="tooltip" data-placement="top" title="Ajouter">'+'<a href="#" data-toggle="modal" data-target="#Ajouter" onclick='+"Ajout('{{val.id_mission}}')"+' class="btn btn-info btn-round m-b-10 m-l-10 waves-effect waves-light icone-center"><i class="fa fa-plus"></i></a></span>')
+                                    }
+                                    if("{{val.constats}}"==="" && "{{val.rapport}}"===""){
+                                        $('#action{{val.id_rapport}}').append('<span data-toggle="tooltip" data-placement="top" title="Ajouter">'+'<a href="#" data-toggle="modal" data-target="#Ajouter" onclick='+"Ajout('{{val.id_mission}}')"+' class="btn btn-info btn-round m-b-10 m-l-10 waves-effect waves-light icone-center"><i class="fa fa-plus"></i></a></span>')
+                                    }
+                                });
+
+                                function Suppression(id_rapp, id_mis){
+                                    $('#supprimer').attr("href","/suppression_rapport_cr/"+id_rapp)
+                                }
+
+                                function Ajout(id){
+                                    $('#id_mission').val(id)
+                                    $('.dropify-clear').show()
+                                }
+                                function Modification(id){
+                                    var x = JSON.parse(localStorage.getItem('rapport_cr'+id));
+                                    $('#id_rapport_modif').val(x[0].id_rapport)
+                                    $('#id_mission_modif').val(x[0].id_mission)
+                                    $('#rapp').addClass('dropify');
+                                    if(x[0].rapport !== "None"){
+                                        $('#rapp').attr("data-default-file","/static/assets/data/rapports/"+FormatEncodage(x[0].rapport))
+                                    }
+                                    $('.dropify').dropify();
+                                    $('.dropify-clear').hide()
+
+                                    $('#constats_modif').val(FormatEncodage(x[0].constats))
+                                    $('#causes_modif').val(FormatEncodage(x[0].causes))
+                                    $('#recommandations_modif').val(FormatEncodage(x[0].recommandations))
+                                }
+                                var selected = [{
+                                                "id_rapport":"{{val.id_rapport}}","constats":"{{val.constats}}","causes":"{{val.causes}}",
+                                                "recommandations":"{{val.recommandations}}","rapport":"{{val.rapport}}",
+                                                "id_mission":"{{val.id_mission}}"
+                                                }];                                                     
+                                localStorage.setItem("rapport_cr{{val.id_rapport}}", JSON.stringify(selected))  
+                            </script>
+
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div>
+
+<div class="modal fade bs-example-modal-center" id="Ajouter" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ajouter un rapport</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{url_for('rapp_cr.ajout_rapport_cr')}}" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <input type="hidden" name="id_mission" id="id_mission">
+                            <label class="mb-2 pb-1">Constats</label>
+                            <textarea class="form-control" name="constats" id="fonctionne_modif" rows="2"></textarea>                        
+                        </div>  
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Causes / Risques</label>
+                            <textarea class="form-control" name="causes" id="point_coordination_modif" rows="2"></textarea>                        
+                        </div>  
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Recommandations</label>
+                            <textarea class="form-control" name="recommandations" id="difficultes_modif" rows="2"></textarea>                        
+                        </div>  
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="file" id="input-file-now" class="dropify" name="rapport" required/>                                                   
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light" >
+                        <i class="fas fa-plus-circle"></i> Ajouter
+                    </button>
+                    <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                        <i class="fas fa-times-circle"></i> Annuler
+                    </button>            
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<div class="modal fade bs-example-modal-center" id="Modifier" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modification du rapport</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{url_for('rapp_cr.modif_rapport_cr')}}" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <input type="hidden" name="id_rapport_modif" id="id_rapport_modif">
+                            <label class="mb-2 pb-1">Constats</label>
+                            <textarea class="form-control" name="constats_modif" id="constats_modif" rows="2" autofocus></textarea>                        
+                        </div>  
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Causes / Risques</label>
+                            <textarea class="form-control" name="causes_modif" id="causes_modif" rows="2"></textarea>                        
+                        </div>  
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Recommandations</label>
+                            <textarea class="form-control" name="recommandations_modif" id="recommandations_modif" rows="2"></textarea>                        
+                        </div>  
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="file" id="rapp" name="rapport_modif"/>                                                   
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light" >
+                        <i class="fas fa-save"></i> Enregistrer
+                    </button>
+                    <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                        <i class="fas fa-times-circle"></i> Annuler
+                    </button>            
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<div class="modal fade bs-example-modal-center" id="Suppression" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="exampleModalLabel">Suppression du rapport</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 style="text-align: center;">Voulez-vous supprimer le rapport ?</h5>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-primary btn-lg waves-effect waves-light" id="supprimer">
+                    <i class="fas fa-trash"></i> Supprimer
+                </a>
+                <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                    <i class="fas fa-times-circle"></i> Annuler
+                </button>            
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script>
+    if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
+</script>
+
+{%endblock%}

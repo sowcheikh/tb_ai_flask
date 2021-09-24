@@ -1,0 +1,349 @@
+{%extends '/tableau-cr/accueil_cr.html'%} 
+{% set active_page = "missions" %}
+{%block corps%} 
+<script>
+    localStorage.clear()
+</script>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mt-0 header-title">Tableau de bord des missions d'audit {{entite}}</h4>
+                <p class="text-muted mb-4 font-14"></p>
+                <div class="general-label row justify-content-center" >
+                    <div class="col-sm-3">
+                        <form action="" class="form-inline" method="POST">              
+                            <div class="input-group">
+                                <label for="example-week-input" class="col-sm-0 col-form-label">Exercice :</label>&nbsp;
+                                <input type="text" class="form-control" id="datepicke" value="{{annee}}" onkeypress="return false;" name="annee" autocomplete="off"/>
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary waves-effect waves-light" type="submit" style="background-color: #ee7627;color: white;">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>    
+                        </form>  
+                    </div>
+                    <div class="col-sm-3">
+                        <form action="{{url_for('cr.suivi_by_cr')}}" class="form-inline" method="POST">
+                            <div class="input-group">
+                                <label for="example-week-input" class="col-sm-0 col-form-label">Semaine :</label>&nbsp;
+                                <input class="form-control" type="week" name="week" value="{{semaine}}" id="example-week-input">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary waves-effect waves-light" type="submit" style="background-color: #ee7627;color: white;">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div> 
+                        </form>   
+                    </div>
+                </div>
+                <table id="datatable-buttons-tb-cr" class="table table-striped table-bordered w-100">
+                    <thead>
+                    <tr>
+                        <th>Semaine</th>
+                        <th>Mission</th>
+                        <th>Type</th>
+                        <th>Exercice</th>
+                        <th>Entité</th>
+                        <th>Date de début</th>
+                        <th>Date de fin prévu</th>
+                        <th>Nbre de J/H réel</th>
+                        <th>Nbre de J/H prévu</th>
+                        <th>Ecart</th>
+                        <th>Statut</th>
+                        <th>Impact</th>
+                        <th>Gravité</th>
+                        <th>Criticité</th>
+                        <th>Taux DCIM</th>
+                        <th>Auditeurs</th>
+                        <th>Commentaires hebdo</th>
+                        <th>Commentaire</th>
+                        <th class="action">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for val in missions_all %}
+                            <tr>
+                                <td>{{val.sem}}</td>
+                                <td>{{val.intitule_mission}}</td>
+                                {% if val.type_mission=='mission'%}
+                                    <td>Mission</td> 
+                                {%elif val.type_mission=='activite'%}
+                                    <td>Activité</td> 
+                                {%else%}
+                                    <td></td>
+                                {% endif %}
+                                <td>{{val.annee}}</td>
+                                <td>{{val.entite}}</td><td>
+                                    {% if val.date_debut !=None %}
+                                        {{val.date_debut.strftime('%d/%m/%Y')}}
+                                    {% endif %}
+                                </td> 
+                                <td>
+                                    {% if val.date_fin !=None %}
+                                        {{val.date_fin.strftime('%d/%m/%Y')}}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if val.nbre_jhreel!=None %}
+                                        {{val.nbre_jhreel}}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if val.nbre_jhprevu!=None %}
+                                        {{val.nbre_jhprevu}}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if val.nbre_jhprevu !=None and val.nbre_jhreel!=None %}
+                                        {{val.nbre_jhreel-val.nbre_jhprevu}}
+                                    {% endif %}
+                                </td>
+                                <td>{{val.statut_mission}}</td>
+                                <td>
+                                    {% if val.impact!=None %}
+                                        {{val.impact}}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if val.gravite!=None %}
+                                        {{val.gravite}}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if val.gravite !=None and val.gravite!=None%}
+                                        {% if val.gravite*val.impact <= 3 %}
+                                            <span class="badge badge-boxed badge-success">{{val.gravite*val.impact}}</span>
+                                        {% elif val.gravite*val.impact > 3 and val.gravite*val.impact <= 6 %}
+                                            <span class="badge badge-boxed badge-warning">{{val.gravite*val.impact}}</span>
+                                        {% elif val.gravite*val.impact > 6 and val.gravite*val.impact <= 12 %}
+                                            <span class="badge badge-boxed badge-orange">{{val.gravite*val.impact}}</span>
+                                        {% else %}
+                                            <span class="badge badge-boxed badge-danger">{{val.gravite*val.impact}}</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if val.taux_cim_teste !=None %}
+                                        {{val.taux_cim_teste}}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge badge-boxed badge-statut">{{val.responsable[0].nom_responsable}}</span><br>
+                                    {% for v in val.auditeurs %}
+                                        {{v.nom_auditeur}} <br>
+                                    {% endfor %}
+                                </td> 
+                                <td>
+                                    <li>Fait:</li> 
+                                    <pre class="format-pre">{{val.fait.replace('<br>','\n')}}</pre>
+                                    <br>
+                                    <li>Reste à faire:</li> 
+                                    <pre class="format-pre">{{val.reste_faire.replace('<br>','\n')}}</pre>
+                                    <br>
+                                    <li>Difficultés:</li> 
+                                    <pre class="format-pre">{{val.difficultes.replace('<br>','\n')}}</pre>
+                                </td>                 
+                                <td>
+                                    <pre class="format-pre">{{val.commentaires.replace('<br>','\n')}}</pre>
+                                </td>
+                                <td align="center" style="vertical-align: middle;">
+                                    <span data-toggle="tooltip" data-placement="top" id="details{{val.id_mission}}" title="Détails">
+                                        <a href="#" data-toggle="modal" data-target="#Details" onclick="Affichage('{{val.id_mission}}')" class="btn btn-primary btn-round m-b-10 m-l-10 waves-effect waves-light icone-center">  
+                                            <i class="fa fa-book"></i>
+                                        </a>
+                                    </span>            
+                                </td>
+                            </tr>
+                            <script type="text/javascript">              
+
+                                function Affichage(id){
+                                    var x = JSON.parse(localStorage.getItem('mission_cr'+id));
+                                    $('#intitule_details').html(FormatEncodage(x[0].intitule_mission))
+                                    $('#semaine_details').html(x[0].sem)
+                                    $('#entite_details').html(x[0].entite)
+                                    $('#dates_details').html(formatDate(x[0].date_debut)+" - "+formatDate(x[0].date_fin))
+                                    if(x[0].nbre_jhreel!=="None"){
+                                        $('#jh_reel_details').html(x[0].nbre_jhreel)
+                                    }
+                                    else{
+                                        $('#jh_reel_details').html("")
+                                    }
+
+                                    if(x[0].nbre_jhprevu!=="None"){
+                                        $('#jh_prevu_details').html(x[0].nbre_jhprevu)
+                                    }
+                                    else{
+                                        $('#jh_prevu_details').html("")
+                                    }
+
+                                    if(x[0].nbre_jhreel!=="None" && x[0].nbre_jhprevu!=="None"){
+                                        $('#ecart_details').html(x[0].nbre_jhreel-x[0].nbre_jhprevu)
+                                    }
+
+                                    $('#statut_details').html(x[0].statut_mission)
+                                    if(x[0].impact !== "None"){
+                                        $('#impact_details').html(x[0].impact)
+                                    }
+
+                                    if(x[0].gravite !== "None"){
+                                        $('#gravite_details').html(x[0].gravite)
+                                    }
+
+                                    if(x[0].impact !== "None" && x[0].gravite !== "None"){
+                                        var criticite = x[0].impact * x[0].gravite
+                                        if (criticite<=3){
+                                            $('#criticite_details').html('<span class="badge badge-boxed badge-success">'+criticite+'</span>')
+                                        }
+                                        else if (criticite>3 && criticite<=6){
+                                            $('#criticite_details').html('<span class="badge badge-boxed badge-warning">'+criticite+'</span>')
+                                        }
+                                        else if (criticite>6 && criticite<=12){
+                                            $('#criticite_details').html('<span class="badge badge-boxed badge-orange">'+criticite+'</span>')
+                                        }
+                                        else{
+                                            $('#criticite_details').html('<span class="badge badge-boxed badge-danger">'+criticite+'</span>')
+                                        } 
+                                    }
+                                    if (x[0].taux_cim!=="None"){
+                                        $('#taux_cim_details').html(x[0].taux_cim)
+                                    }
+                                    $('#responsable_details').html(FormatEncodage(x[0].responsable))
+                                    $('.aud').remove()
+                                    for (var i=0;i< x[0].auditeurs.length;i++){
+                                        $('#auditeurs_details').append('<ol class="aud">'+FormatEncodage(x[0].auditeurs[i].nom_auditeur)+'</ol>')
+                                    }
+                                    $('#fait_details').html(FormatEncodage(x[0].fait))
+                                    $('#reste_faire_details').html(FormatEncodage(x[0].reste_faire))
+                                    $('#difficultes_details').html(FormatEncodage(x[0].difficultes))
+                                    $('#commentaires_details').html('<pre class="format-pre">'+FormatEncodage(x[0].commentaires)+'</pre>')
+                                }
+                                audits = []
+                                {% for v in val.auditeurs %}
+                                    audits.push({"id_auditeur":"{{v.id_auditeur}}","nom_auditeur":"{{v.nom_auditeur}}"})
+                                {% endfor %}
+
+                                var selected = [{"sem":"{{val.sem}}","intitule_mission":"{{val.intitule_mission}}","id_mission":"{{val.id_mission}}",
+                                                "entite":"{{val.entite}}","date_debut":"{{val.date_debut}}",
+                                                "date_fin":"{{val.date_fin}}","nbre_jhreel":"{{val.nbre_jhreel}}",
+                                                "nbre_jhprevu":"{{val.nbre_jhprevu}}","statut_mission":"{{val.statut_mission}}",
+                                                "id_statut_mission":"{{val.id_statut}}","impact":"{{val.impact}}",
+                                                "gravite":"{{val.gravite}}","taux_cim":"{{val.taux_cim_teste}}",
+                                                "responsable":"{{val.responsable[0].nom_responsable}}",
+                                                "id_responsable":"{{val.responsable[0].id_responsable}}","auditeurs":audits,
+                                                "id_suivi":"{{val.id_suivi}}","fait":"{{val.fait}}","reste_faire":"{{val.reste_faire}}",
+                                                "difficultes":"{{val.difficultes}}","commentaires":"{{val.commentaires}}"
+                                            }];                                                     
+                                localStorage.setItem("mission_cr{{val.id_mission}}", JSON.stringify(selected))     
+                            </script> 
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div>
+
+<div class="modal fade bs-example-modal-lg" id="Details" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title mt-0" id="myLargeModalLabel">Détails de la mission</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td colspan="2" style="text-align: center;background-color: #ee7627;color: white;">
+                                <strong id="intitule_details"></strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Semaine</th>
+                            <td id="semaine_details"></td>    
+                        </tr>
+                        <tr>
+                            <th scope="row">Entité responsable</th>
+                            <td id="entite_details"></td>    
+                        </tr>
+                        <tr>
+                            <th scope="row">Date de début et Date de fin</th>
+                            <td id="dates_details"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Nbre de J/H réel</th>
+                            <td id="jh_reel_details"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Nbre de J/H prévu</th>
+                            <td id="jh_prevu_details"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Ecart</th>
+                            <td id="ecart_details"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Statut</th>
+                            <td id="statut_details"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Impact</th>
+                            <td id="impact_details"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Gravité</th>
+                            <td id="gravite_details"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Criticité</th>
+                            <td id="criticite_details"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Taux CIM</th>
+                            <td id="taux_cim_details"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Auditeurs</th>
+                            <td>
+                                <span class="badge badge-boxed badge-statut" id="responsable_details"> </span> <br>
+                                <ul id="auditeurs_details" style="list-style-type:none;padding-left: 0px;"></ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Commentaires hebdo</th>
+                            <td>
+                                <li>Fait</li>
+                                <pre class="format-pre" id="fait_details"></pre>
+                                <li>Reste à faire</li>
+                                <pre class="format-pre" id="reste_faire_details"></pre>
+                                <li>Les points d'alerte ou difficultés</li>
+                                <pre class="format-pre" id="difficultes_details"></pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Commentaires</th>
+                            <td id="commentaires_details"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal"><i class="fa fa-times-circle"></i> Fermer</button>
+            </div>
+        </div>
+    </div><!-- /.modal-content -->
+</div>
+
+<script>                              
+    if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
+    $("#datepicke").datepicker({
+        format: "yyyy",
+        viewMode: "years", 
+        minViewMode: "years"
+    });
+</script>
+{%endblock%}

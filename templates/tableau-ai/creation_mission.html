@@ -1,0 +1,180 @@
+{%extends '/tableau-ai/accueil.html'%}
+{% set active_page = "missions" %}
+{%block corps%} 
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mt-0 header-title">Créer une nouvelle mission</h4>
+                <form method="POST">
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Intitulé</label>
+                            <input type="text" class="form-control" name="intitule_mission" required autofocus>
+                        </div>
+                        <div class="col">
+                            <label class="mb-2 pb-1">Type</label>
+                            <select class="form-control" name="type_mission" required>
+                                <option value="">Choisir le type</option>
+                                    <option value="mission">Mission</option>
+                                    <option value="activite">Activité</option>
+                            </select>
+                        </div>     
+                    </div>
+
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Exercice</label>
+                            <input type="text" class="form-control" id="datepicke" onkeypress="return false;" name="annee" value="" autocomplete="off" required/>
+                        </div>
+                        <div class="col">
+                            <label class="mb-2 pb-1">Responsable</label>
+                            <select class="select2 form-control mb-3 custom-select" name="responsable" id="responsable" required="required">
+                                <option value="">Choisir le responsable</option>
+                                {% for val in responsable %}
+                                    <option value="{{val.id_auditeur}}">{{val.nom_auditeur}}</option>
+                                {% endfor %}     
+                            </select>
+                        </div>     
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Auditeurs</label>
+                            <select class="select2 mb-3 form-control select2-multiple w-100" multiple="multiple" name="auditeurs" id="auditeurs" disabled data-placeholder="Choisir les auditeurs">
+                                {% for val in auditeurs %}
+                                    <option value="{{val.id_auditeur}}">{{val.nom_auditeur}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col" style="padding-left: 9px;">
+                            <label class="mb-2 pb-1">Statut</label>
+                            <select class="form-control" name="statut" required>
+                                <option value="">Choisir le statut</option>
+                                {% for val in statut %}
+                                    <option value="{{val.id_statut_mission}}">{{val.statut_mission}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Entité responsable</label>
+                            <select class="form-control" name="entite" id="entite" disabled>         
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label class="mb-2 pb-1">Date lancement et Date d'émission du rapport</label>
+                            <div>
+                                <div class="input-daterange input-group" id="date-range">
+                                    <input type="text" class="form-control" placeholder="Date début" name="date_debut" autocomplete="off" onkeypress="return false;">
+                                    <input type="text" class="form-control" placeholder="Date fin" name="date_fin" autocomplete="off" onkeypress="return false;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Nombre de J/H réel</label>
+                            <input type="number" class="form-control" name="nbre_jhreel">
+                        </div>
+                        <div class="col">
+                            <label class="mb-2 pb-1">Nombre de J/H prévu</label>
+                            <input type="number" class="form-control" name="nbre_jhprevu" required>
+                        </div> 
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Impact</label>
+                            <select class="form-control" name="impact">
+                                <option value="">Choisir l'impact</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label class="mb-2 pb-1">Gravité</label>
+                            <select class="form-control" name="gravite">
+                                <option value="">Choisir la gravité</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Taux d'efficacité des DCIM testés</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" step="any" name="taux_cim" max="100">
+                                <div class="input-group-append">
+                                  <span class="input-group-text" style="background-color: #ee7627;color: white;">%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label class="mb-2 pb-1">Commentaires</label>
+                            <textarea class="form-control" rows="5" name="commentaires"></textarea>                        
+                        </div>      
+                    </div>
+                    <div class="row"><h4></h4></div>
+
+                    <div class="row">
+                        <div class="col">
+                        <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light" >
+                            <i class="fas fa-plus-circle"></i> Ajouter
+                        </button>
+                        <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;">
+                            <i class="fas fa-times-circle"></i> Annuler
+                        </button>
+                    </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div> <!-- end row -->
+<script>
+    $('#responsable').change(function() {
+        if ($('#responsable :selected').length==1){
+            $('#auditeurs').removeAttr("disabled")
+        }
+        var x = document.getElementById("responsable").value
+        $.ajax({ 
+            type: "GET",
+            url: "/auditeurs"+x,
+        });
+        $('#auditeurs').children('option').remove();
+        $('#entite').children('option').remove();
+        $.ajax({ 
+            type: "GET",
+            contentType: 'application/json; charset=utf-8',
+            url: "/auditeurs"+x,
+            success: function(liste_finale){                        
+                $.each(liste_finale[0],function(index,d){
+                    $("#auditeurs").append("<option value="+d.id_auditeur+">" + d.nom_auditeur + "</option>"); 
+                });
+                $.each(liste_finale[1],function(index,d){
+                    $('#entite').removeAttr("disabled")
+                    $("#entite").append("<option value="+d.id_entite+">" + d.entite + "</option>"); 
+                });
+            }
+        });   
+    });
+
+    $("#datepicke").datepicker({
+        format: "yyyy",
+        viewMode: "years", 
+        minViewMode: "years"
+    });          
+</script>
+{%endblock%}

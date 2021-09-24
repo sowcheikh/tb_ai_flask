@@ -1,0 +1,80 @@
+{#
+<div class="modal fade bs-example-modal-lg" id="codeTemp" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title mt-0" id="myLargeModalLabel">Création code temporaire</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">         
+                <form  action="{{url_for('creation_code_temp')}}" method="POST">
+                    <div class="row form-material">
+                        <div class="col-md-6">
+                            <label class="mb-2 pb-1">Code d'accès</label>
+                            <input type="password" name="code_temp" class="form-control" required autofocus>
+                        </div>
+                       
+                        <div class="col-md-6">
+                            <label class="mb-2 pb-1">Date d'expiration</label>
+                            <input type="text" id="date-format" name="expiration" class="form-control" required>
+                        </div> 
+                        
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light" style="margin-left: 10px;">
+                            <i class="fas fa-save"></i> Enregistrer
+                        </button>&nbsp;&nbsp;
+                        <button type="button" class="btn btn-secondary btn-lg waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times-circle"></i> Fermer</button>
+                    </div>
+                </form>
+            </div>
+       
+        </div>
+    </div><!-- /.modal-content -->
+</div>
+
+<div class="modal fade bs-example-modal-center" id="code" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modification du code d'accès</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{url_for('modification_code')}}" method="POST">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Saisir l'ancien code d'accès</label>
+                            <input type="password" name="ancien_code" class="form-control" required autofocus>
+                        </div>  
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Saisir le nouveau code d'accès</label>
+                            <input type="password" name="confirmation_code" class="form-control" required>
+                        </div>  
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Confirmer le nouveau code d'accès</label>
+                            <input type="password" name="nouveau_code" class="form-control" required>
+                        </div>  
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light" >
+                        <i class="fas fa-save"></i> Enregistrer
+                    </button>
+                    <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                        <i class="fas fa-times-circle"></i> Annuler
+                    </button>            
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>#}

@@ -1,0 +1,33 @@
+"Missions";"semaine";"Date début";"Date fin";"Nbre J/H réel";"Nbre J/H prévu";"nbre_auditeur";"responsable";"Auditeurs";"Commentaire";"Entité responsable";"Statuts";"fait"
+"Audit LCB/FT OFMS";"2021-W05";"27/01/2020";"13/03/2020";53;45;3;2;3,4;"Rapport diffusé le 22/06/2020";2;3;"Rapport diffusé le 22/06/2020"
+"Audit de l’infra du dispositif LCB/FT";"2021-W05";"17/02/2020";"16/03/2020";87;58;3;2;3,4;"Rapport diffusé le 29/04/2020. ";2;3;"Rapport diffusé le 29/04/2020. Retour effectué au CECOM suite à leur observations post restitution finale"
+"FRAP audit Infra AML (TAC)";"2021-W05";"08/04/2020";"01/04/2020";25;20;3;2;;"Diffusée le 31/03/2020";2;3;"Diffusée le 01/04/2020"
+"Contrôle inopiné ventes à 0 francs";"2021-W05";"08/04/2020";"27/08/2020";25;20;3;2;;"Rapport diffusé le 27/08/2020";2;3;"Rapport diffusé le 27/08/2020"
+"Note d’alerte OGC";"2021-W05";"08/04/2020";"18/09/2020";25;20;3;2;;;2;3;"Diffusée le 24/09/2020"
+"Audit de la fiabilité des bases fournisseurs et partenaires (OM et Telco) d’OGC";"2021-W05";"23/01/2020";"15/06/2020";99;72;3;2;3,4;"Diffusé le 09/11/2020";2;3;"Diffusé le 05/11/2020"
+"Audit de la paye OGN";"2021-W05";"14/04/2020";"30/06/2020";99;66;3;2;3,4;"Diffusion en cours ";2;2;"Diffusé le 09/12/2020"
+"Audit de l’expérience client";"2021-W05";"11/09/2020";"06/11/2020";170;148;3;2;3,4;"Projet de rapport transmis à ARQ/AI pour revue. Un stagiaire a rejoint l'équipe AIGP en octobre 2020, ce qui augmente le nombre de J/H";2;2;"Projet de rapport transmis à ARQ/AI pour revue"
+"Audit SER Bissau";"2021-W05";"16/11/2020";"24/12/2020";20;20;3;2;6;"Mission lancée le 16/11/2020";2;2;"Mission lancée le 16/11/2020. Travaux sur site du 07/12/ au 18/12/2020"
+"Suivi reco AIGP";"2021-W05";"02/01/2020";;158;149;3;2;3,4;;2;2;"2 recos soldées : 1 DDE (28506),  1 DV (34051)"
+"Suivi des recommandations IFACI";"2021-W05";;;19;45;3;2;3,4;;2;2;"Dossiers en cours de mise à jour"
+"Audit de l’infra du dispositif LCB/FT ";"2021-W05";"17/02/2020";"29/04/2020";82;58;3;9;"11,2,4";;5;3;"Réponse aux observations de CECOM 05/06/2020"
+"Audit Full ITN OG (SI)";"2021-W05";"13/02/2020";"21/07/2020";133;84;3;9;10,11;"Diffusé le 21/07/2020";5;3;
+"Audit Full ITN OG (Réseau)";"2021-W05";"13/02/2020";"21/07/2020";112;56;3;9;10,11;"Diffusé le 21/07/2020";5;3;
+"Audit Full ITN OG (Sécurité)";"2021-W05";"13/02/2020";"21/07/2020";133;84;3;9;10,11;"Diffusé le 21/07/2020";5;3;"Restitué au DG le 20/7/2020. Diffusé le 21/07/2020"
+"Audit Full ITN OG (Immobilisations techniques)";"2021-W05";"13/02/2020";"21/07/2020";62;35;3;9;10,11;"Diffusé le 21/07/2020";5;3;
+"FRAP Vulnérabilité sur un serveur de supervision RAFIA ";"2021-W05";"17/02/2020";"14/04/2020";7;3;3;9;11;"Diffusée le 14/04/20";5;3;"Diffusée le 14/04/2020"
+"FRAP sur les vulnérabilités de l’infrastructure technique utilisée par le CECOM";"2021-W05";"17/02/2020";"01/04/2020";18;12;3;9;11;"Diffusée le 31/03/2020";5;3;"Diffusée le 01/04/2020"
+"Contrôle des bases clients OG & OFMG  ";"2021-W05";"02/04/2020";"21/07/2020";28;21;3;9;;"Diffusé le 21/07/2020";5;3;"Restitué au DG le 20/7/2020. Diffusé le 21/07/2020"
+"Contrôle inopiné accès et sécurité Oracle";"2021-W05";"07/04/2020";"13/08/2020";63;63;3;9;11;"Diffusé le 21/07/2020";5;3;"Diffusée. Restitué à DSI et SMPO le 10/09/2020"
+"Mission audit de la sous-traitance de la production d’abonnés et intervention clients (ADSL & Fibre)";"2021-W05";"04/09/2020";;;108;3;9;10,11;"Apurement de la revue AI en cours";5;2;"Apurement de la revue AI en cours. Point avec Ibrahima CISSE DSC concernant les réconciliations RBS vs GAIA"
+"Audit des bases clients Mobiles et Orange Money OB";"2021-W05";"31/08/2020";"08/01/2021";33;23;3;9;13;"Restitution DG à planifier";5;2;"Les 2 rapports ont déjà été revus par MCN et apurés pat AITN pi. Attente revue AI. Restitution DG à planifier"
+"Mission Audit SER ITNSEC OB";"2021-W05";"16/11/2020";;;29;;9;;"Lancement de la mission effectué";5;2;"Les équipes sont présentement à Bissau pour les travaux terrain."
+"Audit SER Bissau ITNSEC";"2021-W05";;"24/12/2020";;;;9;;"Mission lancée le 16/11/2020";5;2;
+"Audit du recouvrement SONATEL";"2021-W05";"09/09/2020";;;;;6;7;"Finalisation rapport suite revue AI en cours";4;2;"Rapport transmis à AI le 11/12/2020 suite prise en compte des remarques"
+"Contrôle inopiné rapprochement bancaire";"2021-W05";"27/04/2020";"03/07/2020";69;90;;6;7;"rapport diffusé le 03/07/20";4;3;"Diffusée le 03/07/2020"
+"Audit de la maîtrise des charges d’intérim";"2021-W05";"23/03/2019";"18/06/2020";92;100;3;6;7;"Rapport diffusé le 04/08/2020";4;3;"Rapport diffusé le 04/08/2020"
+"Audit de la maîtrise des charges des centres d’appels";"2021-W05";"21/02/2020";"26/08/2020";98;100;3;6;7;"Entre la fin de l'intervention et la validation du rapport nous avons effectué une mission d'Audit sur les Etats de rapprochement bancaire du Groupe SONATEL";4;3;
+"Audit de la maîtrise des charges : Organisation & RH";"2021-W05";"06/11/2019";"27/03/2020";174;80;;6;8;"Rapport diffusé le 04/08/2020";4;3;"Rapport diffusé le 04/08/2020"
+"Audit de la maîtrise des charges de communication";"2021-W05";"01/04/2020";;;;3;6;8;"Rapport apuré en attente de la restitution avec DGMP (Sargal à finaliser)";4;2;"Revue ARQ apuré. Rapport apuré en attente de la restitution avec DGMP (Sargal à finaliser)"
+"Copil Ecart Stock Nessico Oracle";"2021-W05";"27/04/2020";"30/06/2020";56;94;3;6;;"Diffusée le 06/08/2020";4;3;"Diffusée le 06/08/2020"
+;;;;;;;;;;4;2;"Travaux sur site du 07/12/ au 18/12/2020"

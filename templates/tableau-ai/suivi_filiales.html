@@ -1,0 +1,340 @@
+{%extends '/tableau-ai/accueil.html'%}
+{% set active_page = "suivi" %}
+{%block corps%} 
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <form action="">
+                    <div class="form-group row justify-content-center" >
+                        <label for="example-week-input" class="col-sm-0 col-form-label">Semaine :</label>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <input class="form-control" type="week" value="2011-W33" id="example-week-input">
+                                <div class="input-group-append">
+                                    <a class="btn btn-primary waves-effect waves-light" href="" style="background-color: #ee7627;color: white;">
+                                        <i class="fas fa-search"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                
+                <h4 class="mt-0 header-title">Recommandations OSL</h4>
+                <p class="text-muted mb-4 font-14">
+                </p>
+                <table id="datatable-buttons-osl" class="table table-striped table-bordered w-100">
+                    <thead>
+                    <tr>
+                        <th>Direction</th>
+                        <th>Echue non soldée</th>
+                        <th>Fait</th>
+                        <th>Non echue inf 30</th>
+                        <th>Non fait</th>
+                        <th>Solde</th>
+                        <th>Global AI</th>
+                        <th>Solde + Fait</th>
+                        <th>Reliquat</th>
+                        <th>Taux</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>OSL</td>
+                            <td>61</td>
+                            <td></td>                
+                            <td>2</td>
+                            <td></td>
+                            <td>55</td>
+                            <td>120</td>
+                            <td>55</td>
+                            <td>116</td>
+                            <td>47,41%</td>
+                        </tr>
+                        <tr>
+                            <td>CRITIQUE</td>
+                            <td>27</td>
+                            <td></td>                
+                            <td>2</td>
+                            <td></td>
+                            <td>22</td>
+                            <td>53</td>
+                            <td>22</td>
+                            <td>49</td>
+                            <td>44,90%</td>
+                        </tr>
+                        <tr>
+                            <td>MAJEURE</td>
+                            <td>31</td>
+                            <td></td>                
+                            <td></td>
+                            <td></td>
+                            <td>26</td>
+                            <td>57</td>
+                            <td>26</td>
+                            <td>57</td>
+                            <td>45,61%</td>
+                        </tr>
+                        <tr>
+                            <td>MINEURE</td>
+                            <td>3</td>
+                            <td></td>                
+                            <td></td>
+                            <td></td>
+                            <td>7</td>
+                            <td>10</td>
+                            <td>7</td>
+                            <td>10</td>
+                            <td>70,00%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mt-0 header-title">Recommandations OGC</h4>
+                <p class="text-muted mb-4 font-14">
+                </p>
+                <table id="datatable-buttons-ogc" class="table table-striped table-bordered w-100">
+                    <thead>
+                    <tr>
+                        <th>Direction</th>
+                        <th>Echue non soldée</th>
+                        <th>Fait</th>
+                        <th>Non echue inf 30</th>
+                        <th>Non fait</th>
+                        <th>Solde</th>
+                        <th>Global AI</th>
+                        <th>Solde + Fait</th>
+                        <th>Reliquat</th>
+                        <th>Taux</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>OGC</td>
+                            <td>61</td>
+                            <td></td>                
+                            <td>2</td>
+                            <td></td>
+                            <td>55</td>
+                            <td>120</td>
+                            <td>55</td>
+                            <td>116</td>
+                            <td>47,41%</td>
+                        </tr>
+                        <tr>
+                            <td>CRITIQUE</td>
+                            <td>27</td>
+                            <td></td>                
+                            <td>2</td>
+                            <td></td>
+                            <td>22</td>
+                            <td>53</td>
+                            <td>22</td>
+                            <td>49</td>
+                            <td>44,90%</td>
+                        </tr>
+                        <tr>
+                            <td>MAJEURE</td>
+                            <td>31</td>
+                            <td></td>                
+                            <td></td>
+                            <td></td>
+                            <td>26</td>
+                            <td>57</td>
+                            <td>26</td>
+                            <td>57</td>
+                            <td>45,61%</td>
+                        </tr>
+                        <tr>
+                            <td>MINEURE</td>
+                            <td>3</td>
+                            <td></td>                
+                            <td></td>
+                            <td></td>
+                            <td>7</td>
+                            <td>10</td>
+                            <td>7</td>
+                            <td>10</td>
+                            <td>70,00%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mt-0 header-title">Recommandations OGB</h4>
+                <p class="text-muted mb-4 font-14">
+                </p>
+                <table id="datatable-buttons-ogb" class="table table-striped table-bordered w-100">
+                    <thead>
+                    <tr>
+                        <th>Direction</th>
+                        <th>Echue non soldée</th>
+                        <th>Fait</th>
+                        <th>Non echue inf 30</th>
+                        <th>Non fait</th>
+                        <th>Solde</th>
+                        <th>Global AI</th>
+                        <th>Solde + Fait</th>
+                        <th>Reliquat</th>
+                        <th>Taux</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>OGB</td>
+                            <td>61</td>
+                            <td></td>                
+                            <td>2</td>
+                            <td></td>
+                            <td>55</td>
+                            <td>120</td>
+                            <td>55</td>
+                            <td>116</td>
+                            <td>47,41%</td>
+                        </tr>
+                        <tr>
+                            <td>CRITIQUE</td>
+                            <td>27</td>
+                            <td></td>                
+                            <td>2</td>
+                            <td></td>
+                            <td>22</td>
+                            <td>53</td>
+                            <td>22</td>
+                            <td>49</td>
+                            <td>44,90%</td>
+                        </tr>
+                        <tr>
+                            <td>MAJEURE</td>
+                            <td>31</td>
+                            <td></td>                
+                            <td></td>
+                            <td></td>
+                            <td>26</td>
+                            <td>57</td>
+                            <td>26</td>
+                            <td>57</td>
+                            <td>45,61%</td>
+                        </tr>
+                        <tr>
+                            <td>MINEURE</td>
+                            <td>3</td>
+                            <td></td>                
+                            <td></td>
+                            <td></td>
+                            <td>7</td>
+                            <td>10</td>
+                            <td>7</td>
+                            <td>10</td>
+                            <td>70,00%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mt-0 header-title">Recommandations OML</h4>
+                <p class="text-muted mb-4 font-14">
+                </p>
+                <table id="datatable-buttons-oml" class="table table-striped table-bordered w-100">
+                    <thead>
+                    <tr>
+                        <th>Direction</th>
+                        <th>Echue non soldée</th>
+                        <th>Fait</th>
+                        <th>Non echue inf 30</th>
+                        <th>Non fait</th>
+                        <th>Solde</th>
+                        <th>Global AI</th>
+                        <th>Solde + Fait</th>
+                        <th>Reliquat</th>
+                        <th>Taux</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>OML</td>
+                            <td>61</td>
+                            <td></td>                
+                            <td>2</td>
+                            <td></td>
+                            <td>55</td>
+                            <td>120</td>
+                            <td>55</td>
+                            <td>116</td>
+                            <td>47,41%</td>
+                        </tr>
+                        <tr>
+                            <td>CRITIQUE</td>
+                            <td>27</td>
+                            <td></td>                
+                            <td>2</td>
+                            <td></td>
+                            <td>22</td>
+                            <td>53</td>
+                            <td>22</td>
+                            <td>49</td>
+                            <td>44,90%</td>
+                        </tr>
+                        <tr>
+                            <td>MAJEURE</td>
+                            <td>31</td>
+                            <td></td>                
+                            <td></td>
+                            <td></td>
+                            <td>26</td>
+                            <td>57</td>
+                            <td>26</td>
+                            <td>57</td>
+                            <td>45,61%</td>
+                        </tr>
+                        <tr>
+                            <td>MINEURE</td>
+                            <td>3</td>
+                            <td></td>                
+                            <td></td>
+                            <td></td>
+                            <td>7</td>
+                            <td>10</td>
+                            <td>7</td>
+                            <td>10</td>
+                            <td>70,00%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div>
+
+{%endblock%}

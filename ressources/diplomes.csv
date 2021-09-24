@@ -1,0 +1,25 @@
+"nom_auditeur";"statut";"fonction";"activite";"nbre_jour_formation";"promotion";"date_entree";"date_sortie";"diplomes";"certifications";"id_entite"
+"Abdou Lahate KEBE";"Responsable";"Chef_de_departement";"false";;;;;"Master in Auditing Management Accounting and Information Systems à l'ESC Lille (Skema Business School).
+Maîtrise de Sciences Economiques et Sociales Université Paris XI.
+";"CIA (en cours)";1
+"Thierno BALDE";"Responsable";"Chef_de_service";"true";4,5;;"26/09/2012";;"Master 2 Spécialisé Audit et expertise comptable à l'ESC Pau.
+Master 2 économie du développement option intégration économique et sociale à l'université Bordeaux 4 Montesquieu.";;2
+"Fatoumata SARR";"Auditeur";"Auditeur";"true";1,5;;;;"Master 2 en management des risques.";;2
+"Maty SARR";"Auditeur";"Auditeur";"true";2;;"01/02/2020";;"Certification professionnelle Titre CPA Auditrice, CA Province de Québec (Canada).
+Maîtrise en Administration des Affaires Université Laval  (MBA) Ville de Québec (Canada), Mai 2010.";;2
+"Mame Coumba NDIAYE";"Responsable";"Chef_de_service";"true";4,5;"01/01/2019";;;"Diplôme d’Ingénieur Electronicien de l’ESME (Ecole Spéciale de Mécanique et d’Electricité de Paris).";;3
+"Aminata ATHJ";"Responsable";"Chef_de_service";"true";7,5;"01/01/2018";"01/09/2014";;"Master of Science in management ESC Bordeaux.";;4
+"Mansour LO";"Auditeur";"Auditeur";"true";2;;"01/02/2020";;"MBA Audit – Contrôle de Gestion et aide à la décision (BAC+5) à l’Institut Supérieur de Management (ISM) – Dakar, Sénégal.";;4
+"Débo MBAYE";"Auditeur";"Auditeur";"false";;;;;;;4
+"Ibrahima NIANG";"Responsable";"Chef_de_service";"true";7,5;;"12/02/2018";;"Master en cryptographie et transmissions de données et sécurité informatique.
+Diplôme en ingénieurie télécom.";"IS0 27001 Lead Auditor.
+INTEC-Audit SI.
+CISA.
+CCNA(1,2,3,4).";5
+"Mamadou GUEYE";"Auditeur";"Auditeur";"true";4,5;;"04/05/2015";;"Master en science des technologies de l'information et de la communication.";"IS0 27001 Lead Auditor.";5
+"Serigne Mouhamadane DIOP";"Auditeur";"Auditeur";"true";5;;"02/01/2020";;"Master Professionnel Transmission de données et Sécurité de l’Information LACGAA / FST / UCAD ";;5
+"Fatima GUEYE";"Responsable";"Chef_de_service";"true";1,5;;"16/01/2016";;"Diplôme Supérieur Comptable (Bac+4)  de l'ESP.
+Diplôme Universitaire de Technologie en gestion (DUT).
+";;6
+"Nouhou TRAORE";"Responsable";"Data_Scientist";"true";2;;"03/08/2019";;"Diplôme d’Ingénieur Polytechnique Génie Informatique École Supérieure Polytechnique ESP.";"Project Management Professional, PMP Project.
+Management Institute * COPC Registered Coordinator COPC Inc.";7

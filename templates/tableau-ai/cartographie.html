@@ -1,0 +1,502 @@
+{%extends '/tableau-ai/accueil.html'%}
+{% set active_page = "missions" %}
+{%block corps%}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+
+                <h4 class="mt-0 header-title">Cartographie des compétences</h4>
+                <p class="text-muted mb-4 font-14">
+                    <button data-toggle="modal" data-target="#ModalAjout" id="ajout" class="btn btn-primary" >
+                        <i class="fas fa-plus-circle"></i> Ajouter notation
+                    </button>
+                </p>
+                <br>
+                <style>
+                    .centrer{
+                        text-align:center
+                    }
+                </style>
+                <div class="row">
+                    <div class="col-3">
+                            <label class="mb-2 pb-1">Afficher cartographie</label>
+                            <select class="form-control carto_select" name="carto" id="carto_select">
+                                <option value="">Choisir type affichage</option>
+                                <option value="aud">Auditeur</option>
+                                <option value="ent">Entite</option>
+                                <option value="dep">Departement</option>
+
+                            </select>
+                        </div>
+                <div class="col-7" id="auditeur_search">
+                    <form action="" method="POST">
+                        <div class="form-group row justify-content-center">
+
+                            <div class="col-sm-12">
+                            <label for="example-week-input" class="col-sm-0 ml-2 col-form-label">Liste par Auditeur :</label>
+                                <div class="input-group">
+                                   <div class="col-6">
+                                        <select class="select2 form-control mb-3 custom-select" name="id_auditeur" id="auditeur_id" required>
+                                        <option value="">Choisir un auditeur</option>
+                                        {% for val in auditeurs %}
+                                            <option {% if auth_id !=0 and auth_id ==val.id_auditeur %}selected="selected"{% endif %} value="{{val.id_auditeur}}">{{val.nom_auditeur}}</option>
+                                        {% endfor %}
+                                    </select>
+                                   </div>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary waves-effect waves-light" id="rechercherAuditeur" type="button" style="background-color: #ee7627;color: white;">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-7" id="entite_search">
+                    <form action="" method="POST">
+                        <div class="form-group row justify-content-center">
+
+                            <div class="col-sm-12">
+                            <label for="example-week-input" class="col-sm-0 ml-2 col-form-label">Liste par Entite :</label>
+                                <div class="input-group">
+                                   <div class="col-6">
+                                        <select class="select2 form-control mb-3 custom-select" name="id_entite" id="entite_id" required>
+                                        <option value="">Choisir un entite</option>
+                                        {% for val in entites %}
+                                            <option {% if auth_id !=0 and auth_id ==val.id_entite %}selected="selected"{% endif %} value="{{val.id_entite}}">{{val.entite}}</option>
+                                        {% endfor %}
+                                    </select>
+                                   </div>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary waves-effect waves-light" id="rechercherEntite" type="button" style="background-color: #ee7627;color: white;">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-7" id="departement_search">
+                    <form action="" method="POST">
+                        <div class="form-group row justify-content-center">
+
+                            <div class="col-sm-12">
+                            <label for="example-week-input" class="col-sm-0 ml-2 col-form-label">Liste par Departement :</label>
+                                <div class="input-group">
+                                   <div class="col-6">
+                                        <select class="select2 form-control mb-3 custom-select" name="id_departement" id="departement_id" required>
+                                        <option value="">Choisir un département</option>
+                                        {% for val in departements %}
+                                            <option {% if auth_id !=0 and auth_id ==val.id_departement %}selected="selected"{% endif %} value="{{val.id_departement}}">{{val.departement}}</option>
+                                        {% endfor %}
+                                    </select>
+                                   </div>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary waves-effect waves-light" id="rechercherDepartement" type="button" style="background-color: #ee7627;color: white;">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                </div>
+                <div class="table-rep-plugin">
+                    <div class="table-responsive b-0" data-pattern="priority-columns" >
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Thématiques</th>
+                                <th>Competence & Connaissances audit interne Sonatel</th>
+                                <th>Comp / CNCE / IT</th>
+                                <th >Formation à lancer</th>
+                                <th >Priorité</th>
+                                <th >Péridoe</th>
+                                <th >Auditeur</th>
+                                <th >Note</th>
+                                <th >Moyenne</th>
+                                <th >Commentaires</th>
+
+                            </tr>
+                            </thead>
+                            <tbody id="tbody">
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div>
+<div class="modal fade bs-example-modal-center" id="ModalAjout" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ajouter une thématique</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{url_for('carto.ajout_notation')}}" method="POST">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Note</label>
+                            <input type="number" class="form-control" name="note">
+                        </div>
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Période</label>
+                            <input type="date" class="form-control" id="datepicke" onkeypress="return false;" name="periode" value="" autocomplete="off" required/>
+                        </div>
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Auditeurs</label>
+                             <select class="select2 form-control mb-3 custom-select" name="id_auditeur" id="id_auditeur" required="required">
+                                <option value="">Choisir un auditeur</option>
+                                {% for val in auditeurs %}
+                                    <option value="{{val.id_auditeur}}">{{val.nom_auditeur}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Competences</label>
+                            <select class="select2 form-control mb-3 custom-select" name="id_competence" id="id_competence" required="required">
+                                <option value="">Choisir une comptence</option>
+                                {% for val in competences %}
+                                    <option value="{{val.id_competence}}">{{val.competence}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light" >
+                        <i class="fas fa-plus-circle"></i> Ajouter
+                    </button>
+                    <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                        <i class="fas fa-times-circle"></i> Annuler
+                    </button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div>
+</div>
+<script>
+
+    $("#rechercherAuditeur").click(function (e) {
+        e.preventDefault();
+        let note_auditeur = 0;
+        let nobr_aud = 0;
+        let moyenne = 0;
+        let id = $("#auditeur_id").val();
+        const table = $('#tbody');
+        $.ajax({
+            method: "GET",
+            url:'/liste_cartographie/'+id,
+            success: function (response) {
+                table.empty();
+                $.each(response,function (key, items){
+                    let theme = key;
+                    let taille = items.length;
+                    console.log('taille', taille)
+                    $.each(items,function (index,item) {
+                        note_auditeur +=item['note'];
+                        nobr_aud ++;
+                        console.log('index', index)
+                        if(taille === 1){
+                            table.append(`<tr>
+                                    <td rowspan="${taille}">${theme}</td>
+                                    <td>${item['libelle_competence']}</td>
+                                    <td>${item['comp_cnce_it']}</td>
+                                    <td>${item['formation']}</td>
+                                    <td >5</td>
+                                    <td>${convertDate(item['periode'])}</td>
+                                    <td><span class="badge badge-boxed badge-statut">${item['auditeur']}</span></td>
+                                    <td>${item['note']}</td>
+                                    <td class="moyenne_aud">${moyenne}</td>
+                                    <td>${commentaire_aud(item['note'])}</td>
+
+                                </tr>`)
+                        }else{
+
+                        if(taille !== index+1){
+                            table.append(`<tr>
+                                    <td rowspan="${taille}">${theme}</td>
+                                    <td>${item['libelle_competence']}</td>
+                                    <td>${item['comp_cnce_it']}</td>
+                                    <td>${item['formation']}</td>
+                                    <td >5</td>
+                                    <td>${convertDate(item['periode'])}</td>
+                                    <td><span class="badge badge-boxed badge-statut">${item['auditeur']}</span></td>
+                                    <td>${item['note']}</td>
+                                    <td class="moyenne_aud">${moyenne}</td>
+                                    <td>${commentaire_aud(item['note'])}</td>
+
+                                </tr>`)
+                        }else{
+                            table.append(`<tr>
+                                    <td>${item['libelle_competence']}</td>
+                                    <td>${item['comp_cnce_it']}</td>
+                                    <td>${item['formation']}</td>
+                                    <td >5</td>
+                                    <td>${convertDate(item['periode'])}</td>
+                                    <td>${item['note']}</td>
+
+                                </tr>`)
+                        }
+                        }
+
+                    })
+                    moyenne_aud(note_auditeur, nobr_aud);
+                     taille = 0;
+                })
+
+            }
+        })
+
+    })
+    $("#rechercherEntite").click(function (e) {
+    e.preventDefault();
+     let note_auditeur = 0;
+    let nobr_aud = 0;
+    let moyenne = 0;
+    let id_ent = $("#entite_id").val();
+    const table = $('#tbody');
+    $.ajax({
+        method: "GET",
+        url:'/liste_cartographie_ent/'+id_ent,
+        success: function (response) {
+            table.empty();
+            $.each(response,function (key, items){
+                let theme = key;
+                let taille = items.length;
+                console.log('taille', taille)
+                $.each(items,function (index,item) {
+                    note_auditeur +=item['note'];
+                    nobr_aud ++;
+                    console.log('index', index)
+                    if(taille === 1){
+                        table.append(`<tr>
+                                <td rowspan="${taille}">${theme}</td>
+                                <td>${item['libelle_competence']}</td>
+                                <td>${item['comp_cnce_it']}</td>
+                                <td>${item['formation']}</td>
+                                <td >5</td>
+                                <td>${convertDate(item['periode'])}</td>
+                                <td><span class="badge badge-boxed badge-statut">${item['auditeur']}</span></td>
+                                <td>${item['note']}</td>
+                                <td rowspan="${taille}" class="moyenne_entite">${moyenne}</td>
+                                <td>${commentaire_aud(item['note'])}</td>
+
+                            </tr>`)
+                    }else{
+
+                    if(taille !== index+1){
+                        table.append(`<tr>
+                                <td rowspan="${taille}">${theme}</td>
+                                <td>${item['libelle_competence']}</td>
+                                <td>${item['comp_cnce_it']}</td>
+                                <td>${item['formation']}</td>
+                                <td >5</td>
+                                <td>${convertDate(item['periode'])}</td>
+                                <td><span class="badge badge-boxed badge-statut">${item['auditeur']}</span></td>
+                                <td>${item['note']}</td>
+                                <td rowspan="${taille}" class="moyenne_entite">${moyenne}</td>
+                                <td>${commentaire_aud(item['note'])}</td>
+
+                            </tr>`)
+                    }else{
+                        table.append(`<tr>
+                                <td>${item['libelle_competence']}</td>
+                                <td>${item['comp_cnce_it']}</td>
+                                <td>${item['formation']}</td>
+                                <td >5</td>
+                                <td>${convertDate(item['periode'])}</td>
+                                <td><span class="badge badge-boxed badge-statut">${item['auditeur']}</span></td>
+                                <td>${item['note']}</td>
+                                <td>${commentaire_aud(item['note'])}</td>
+                            </tr>`)
+                    }
+                    }
+
+                })
+                moyenne_Entite(note_auditeur, nobr_aud);
+                min(2);
+
+                 taille = 0;
+            })
+
+
+        }
+    })
+
+})
+    $("#rechercherDepartement").click(function (e) {
+        e.preventDefault();
+         let note_auditeur = 0;
+        let nobr_aud = 0;
+        let moyenne = 0;
+        let id_dep = $("#departement_id").val();
+        const table = $('#tbody');
+        $.ajax({
+            method: "GET",
+            url:'/liste_cartographie_dep/'+id_dep,
+            success: function (response) {
+                table.empty();
+                $.each(response,function (key, items){
+                    let theme = key;
+                    let taille = items.length;
+                    console.log('taille', taille)
+                    $.each(items,function (index,item) {
+                        note_auditeur +=item['note'];
+                        nobr_aud ++;
+                        console.log('index', index)
+                        if(taille === 1){
+                            table.append(`<tr>
+                                    <td rowspan="${taille}">${theme}</td>
+                                    <td>${item['libelle_competence']}</td>
+                                    <td>${item['comp_cnce_it']}</td>
+                                    <td>${item['formation']}</td>
+                                    <td >5</td>
+                                    <td>${convertDate(item['periode'])}</td>
+                                    <td><span class="badge badge-boxed badge-statut">${item['auditeur']}</span></td>
+                                    <td>${item['note']}</td>
+                                    <td class="moyenne_dep">${moyenne}</td>
+                                    <td>${commentaire_aud(item['note'])}</td>
+
+                                </tr>`)
+                        }else{
+
+                        if(taille !== index+1){
+                            table.append(`<tr>
+                                    <td rowspan="${taille}">${theme}</td>
+                                    <td>${item['libelle_competence']}</td>
+                                    <td>${item['comp_cnce_it']}</td>
+                                    <td>${item['formation']}</td>
+                                    <td >5</td>
+                                    <td>${convertDate(item['periode'])}</td>
+                                    <td><span class="badge badge-boxed badge-statut">${item['auditeur']}</span></td>
+                                    <td>${item['note']}</td>
+                                    <td class="moyenne_dep">${moyenne}</td>
+                                    <td>${commentaire_aud(item['note'])}</td>
+
+                                </tr>`)
+                        }else{
+                            table.append(`<tr>
+                                    <td>${item['libelle_competence']}</td>
+                                    <td>${item['comp_cnce_it']}</td>
+                                    <td>${item['formation']}</td>
+                                    <td >5</td>
+                                    <td>${convertDate(item['periode'])}</td>
+                                    <td><span class="badge badge-boxed badge-statut">${item['auditeur']}</span></td>
+                                    <td>${item['note']}</td>
+                                    <td>${moyenne}</td>
+                                    <td>${commentaire_aud(item['note'])}</td>
+
+                                </tr>`)
+                        }
+                        }
+
+                    })
+                    moyenne_dep(note_auditeur, nobr_aud);
+                     taille = 0;
+                })
+
+            }
+        })
+
+    })
+    $(document).ready(function () {
+        $('#auditeur_search').hide()
+        $('#entite_search').hide()
+        $('#departement_search').hide()
+        $('.carto_select').click(function (e) {
+            e.preventDefault()
+            const carto = document.getElementById('carto_select')
+            const aud = document.getElementById('auditeur_search')
+            const ent = document.getElementById('entite_search')
+            const dep = document.getElementById('departement_search')
+            if (carto.value === 'aud') {
+                aud.style.display = 'block';
+                ent.style.display = 'none';
+                dep.style.display = 'none';
+
+            }
+            else if (carto.value === 'ent') {
+               aud.style.display = 'none';
+               ent.style.display = 'block';
+               dep.style.display = 'none';
+            }
+            else if (carto.value === 'dep') {
+                aud.style.display = 'none';
+                ent.style.display = 'none';
+                dep.style.display = 'block';
+            }
+            else {
+                aud.style.display = 'none';
+               ent.style.display = 'none';
+               dep.style.display = 'none';
+                carto.innerHTML = `<option value="">Choisir type affichage</option>
+                                   <option value="aud">Auditeur</option>
+                                   <option value="ent">Entite</option>
+                                   <option value="dep">Departement</option>`
+            }
+        })
+    })
+
+
+function convertDate(str) {
+    const date = new Date(str),
+        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+        day = ("0" + date.getDate()).slice(-2);
+    return [date.getFullYear(), mnth, day].join("-");
+}
+function moyenne_aud(totalNotes, totalAud){
+    let moy = totalNotes/totalAud
+     $('.moyenne_aud').html(moy);
+
+}
+function moyenne_Entite(totalNotes, totalAud){
+    let moy = totalNotes/totalAud;
+     $('.moyenne_entite').html(moy);
+
+}
+function moyenne_dep(totalNotes, totalAud){
+    let moy = totalNotes/totalAud
+     $('.moyenne_dep').html(moy);
+
+}
+function min(moy) {
+    let nbr = 0;
+    if (moy < 5) {
+        nbr +=nbr;
+    }
+    return nbr
+}
+function commentaire_aud(moy) {
+    let com='';
+    if (moy < 5) {
+        com = 'Doit refaire la formation';
+    } else {
+        com =  'Formation reussie';
+    }
+    return com
+}
+</script>
+
+{%endblock%}

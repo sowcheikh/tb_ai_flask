@@ -1,0 +1,340 @@
+{%extends '/tableau-admin/admin.html'%}
+{% set active_page = "departement" %}
+{%block corps%}
+<script>
+    localStorage.clear()
+</script>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+            <p class="text-muted mb-4 font-14">
+                    <button data-toggle="modal" data-target="#ModalAjout" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i> Ajouter un service
+                    </button>
+                </p>
+                <table id="datatable-buttons-structure" class="table table-striped table-bordered w-100">
+                    <thead>
+                        <tr>
+                            <th>Nom Service</th>
+                            <th>Responsable service</th>
+                            <th>Departement</th>
+                            <th class="action">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                   {% for val in services%}
+                            <tr>
+                                <td> {{ val.entite }}</td>
+                                <td> {{ val.responsable_service }}</td>
+                                <td> {{ val.departement }}</td>
+                                <td align="center" style="vertical-align: middle;">
+                                    <span data-toggle="tooltip" data-placement="top" title="Modifier">
+                                        <a href="#" data-toggle="modal" data-target="#Modifier" id ="{{ val.id_entite }}" class="btn btn-secondary btn-round m-b-10 m-l-10 waves-effect waves-light icone-center modif_services">
+                                            <i class="fa fa-edit" ></i>
+                                        </a>
+                                    </span>
+                                   {%if val.is_active==true%}
+                                            <span data-toggle="tooltip" data-placement="top" title="Bloquer">
+                                                <a href="#" data-toggle="modal" data-target="#Bloquer" id="{{ val.id_entite }}" class="btn btn-info btn-round m-b-10 m-l-10 waves-effect waves-light icone-center bloquers">
+                                                    <i class="fas fa-unlock"></i>
+                                                </a>
+                                            </span>
+                                        {%elif val.is_active==false%}
+                                            <span data-toggle="tooltip" data-placement="top" title="Débloquer">
+                                                <a href="#" data-toggle="modal" data-target="#Debloquer" id="{{ val.id_entite }}" class="btn btn-flickr btn-round m-b-10 m-l-10 waves-effect waves-light icone-center debloquers">
+                                                    <i class="fas fa-lock"></i>
+                                                </a>
+                                            </span>
+                                        {%endif%}
+                                            <span data-toggle="tooltip" data-placement="top" title="Supprimer">
+                                                <a href="#" data-toggle="modal" data-target="#Suppression" onclick="Suppression('{{val.id_departement}}')" class="btn btn-danger btn-round m-b-10 m-l-10 waves-effect waves-light icone-center">
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
+                                            </span>
+                                </td>
+                            </tr>
+                    {%endfor%}
+                    <script type="text/javascript">
+                       function Suppression(id){
+                                $('#supprimer').attr("href","/supprimer_dept/"+id)
+                            }
+                   </script>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div>
+<div class="modal fade bs-example-modal-lg" id="ModalAjout" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title mt-0" id="myLargeModalLabel">Ajouter un service</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            </div>
+                            <div class="modal-body">
+                <form action="{{url_for('admin_serv.creation_service')}}" method="POST">
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Département</label>
+
+                            <select class="select2 form-control mb-3 custom-select" name="id_departement" id="id_departement" required="required">
+                                <option value="">Choisir le département</option>
+                                {% for val in departements %}
+                                    <option value="{{val.id_departement}}">{{val.departement}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                          {#<div class="col-6">
+                            <label class="mb-2 pb-1"> Responsable service</label>
+                            <select class="select2 form-control mb-3 custom-select" name="responsable_service" id="responsable_service" >
+                            </select>
+                        </div>#}
+                    <div class="col-6">
+                            <label class="mb-2 pb-1">Nom service</label>
+                            <input type="text" class="form-control" name="entite" placeholder="Nom service" required autofocus>
+                        </div>
+                        <input type="hidden" name="total" id="total">
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                  {#<div class="col-6">
+                            <label class="mb-2 pb-1">Nom service</label>
+                            <input type="text" class="form-control" name="nom_service" placeholder="Nom service" required autofocus>
+                        </div>#}
+                        {#<div class="col-6">
+                            <label class="mb-2 pb-1"> Login</label>
+                            <input type="email" class="form-control" name="login" placeholder="Entrez votre login" required autofocus>
+                        </div>#}
+                    </div>
+
+                    <div class="" id="container">
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                        <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light" >
+                            <i class="fas fa-plus-circle"></i> Ajouter
+                        </button>
+                        <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;">
+                            <i class="fas fa-times-circle"></i> Annuler
+                        </button>
+                    </div>
+                    </div>
+                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<div class="modal fade bs-example-modal-center" id="Modifier" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modification Service</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{url_for('admin_serv.modification_service')}}" method="POST">
+                <div class="modal-body">
+                     <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Département</label>
+                            <select class="select2 form-control mb-3 custom-select" name="id_departement" id="id_departement_modif" >
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Nom Service</label>
+                            <input type="hidden" class="form-control" name="id_entite" id="id_service">
+                            <input type="text" class="form-control" name="entite" id="nom_service" required>
+                        </div>
+                    </div>
+                    <div class="row"><h4></h4></div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-2 pb-1">Responsable Service</label>
+                            <select class="select2 form-control mb-3 custom-select" name="responsable_service" id="id_service_modif" >
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row"><h4></h4></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-lg waves-effect waves-light" >
+                        <i class="fas fa-save"></i> Enregistrer
+                    </button>
+                    <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                        <i class="fas fa-times-circle"></i> Annuler
+                    </button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<div class="modal fade bs-example-modal-center" id="Bloquer" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="exampleModalLabel">Blocage du département</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 style="text-align: center;">Voulez-vous bloquer le service ?</h5>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="id_serv_bloquer" name="id_dep_input" >
+                <a type="button" class="btn btn-primary btn-lg waves-effect waves-light" id="bloquer">
+                    <i class="fas fa-lock"></i> Bloquer
+                </a>
+                <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                    <i class="fas fa-times-circle"></i> Annuler
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div>
+</div>
+<div class="modal fade bs-example-modal-center" id="Debloquer" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="exampleModalLabel">Déblocage du département</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 style="text-align: center;">Voulez-vous débloquer le service ?</h5>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="id_serv_debloquer" name="id_dep_input" >
+                <a type="button" class="btn btn-primary btn-lg waves-effect waves-light" id="debloquer">
+                    <i class="fas fa-unlock"></i> Débloquer
+                </a>
+                <button type="reset" class="btn btn-secondary btn-lg" style="margin-left: 10px;" data-dismiss="modal">
+                    <i class="fas fa-times-circle"></i> Annuler
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div>
+</div>
+    <script>
+    $(document).ready(function () {
+       // document.getElementById("responsable_service").disabled = true
+        $("#id_departement").change(function (e) {
+            e.preventDefault()
+            let service = document.getElementById("responsable_service");
+            let departement = $("#id_departement").val();
+            if (departement !== '') {
+
+                $.ajax({
+                    method: "GET",
+                    url: "/services" + departement,
+                    success: function (response) {
+                        $.each(response, function (index, user) {
+                            if (index === 0) {
+                                service.innerHTML = `<option value="">Choisir le responsable</option>`
+                                service.innerHTML += `<option value="${user['id_auditeur']}">${user['nom_auditeur']}</option>`
+                            } else {
+                                service.innerHTML += `<option value="${user['id_auditeur']}">${user['nom_auditeur']}</option>`
+                            }
+
+                        })
+                        document.getElementById("responsable_service").disabled = false
+
+                    }
+                })
+            } else {
+                    document.getElementById("responsable_service").disabled = true
+                   service.innerHTML = `<option value="">Choisir le responsable</option>`
+            }
+
+        })
+        $(".modif_services").click(function (e) {
+            e.preventDefault()
+            // alert('hello')
+            let service = document.getElementById('id_service_modif')
+            let departement = document.getElementById('id_departement_modif')
+            const idServ = $(this).attr('id')
+            $("#id_service").val(idServ)
+            //alert(idServ)
+            $.ajax({
+                url: '/modif_service' + idServ,
+                method: 'GET',
+                success: function (response) {
+                   // console.log(response)
+                     let data = response[0]
+                     let serv = data.services[0]
+                    console.log(serv['id_departement'])
+                     let infos = data.infos
+                     let dep = data.departements
+                    console.log(dep )
+                     $('#nom_service').val(serv['nom_service'])
+                        $.each(infos, function (index, item) {
+                            if (index === 0) {
+                                service.innerHTML = `<option value="">Choisir responsable service</option>`
+                                service.innerHTML += `<option  ${item['id_auditeur'] === serv["responsable_service"] ?'selected':''} value="${item['id_auditeur'] }">${item['nom_auditeur'] }</option>`
+                            } else {
+                                service.innerHTML += `<option  ${item['id_auditeur'] === serv["responsable_service"] ?'selected':''} value="${item['id_auditeur'] }">${item['nom_auditeur'] }</option>`
+                            }
+
+                        })
+                        $.each(dep, function (index, valeur) {
+                            if (index === 0) {
+                                departement.innerHTML = `<option value="">Choisir département</option>`
+                                departement.innerHTML += `<option  ${serv['id_departement'] === valeur["id_departement"] ?'selected':''} value="${valeur['id_departement'] }">${valeur['departement'] }</option>`
+                            } else {
+                                departement.innerHTML += `<option  ${serv['id_departement'] === valeur["id_departement"] ?'selected':''} value="${valeur['id_departement'] }">${valeur['departement'] }</option>`
+                            }
+
+                        })
+                }
+            })
+        })
+
+        $(".bloquers").click(function (e) {
+             e.preventDefault()
+             let idServ = $(this).attr('id')
+             $("#id_serv_bloquer").val(idServ)
+         })
+
+        $(".debloquers").click(function (e) {
+             e.preventDefault()
+             let idServ = $(this).attr('id')
+             $("#id_serv_debloquer").val(idServ)
+         })
+
+        $("#debloquer").click(function (e) {
+            e.preventDefault()
+            let idServ = $("#id_serv_debloquer").val()
+            $.ajax({
+                url: '/debloquer_service'+idServ,
+                method: 'GET',
+                success: function (response) {
+                    //$("#").modal('hide');
+                    location.reload();
+
+                }
+            })
+        })
+
+
+        $("#bloquer").click(function (e) {
+            e.preventDefault()
+            let idServ = $("#id_serv_bloquer").val()
+            $.ajax({
+                url: '/bloquer_service'+idServ,
+                method: 'GET',
+                success: function (response) {
+                    //$("#").modal('hide');
+                    location.reload();
+                }
+            })
+        })
+    })
+    </script>
+{%endblock%}

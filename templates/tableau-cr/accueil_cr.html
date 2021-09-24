@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+        <title>Tableau de bord des missions d'audit</title>
+        <meta content="Admin Dashboard" name="description" />
+        <meta content="Mannatthemes" name="author"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+        <script src="{{url_for('static', filename='assets/js/jquery.min.js')}}"></script>
+
+        <link rel="shortcut icon" href="{{url_for('static', filename='assets/images/favicon.ico')}}">
+        
+        <!-- DataTables -->
+        <link href="{{url_for('static', filename='assets/plugins/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{url_for('static', filename='assets/plugins/datatables/buttons.bootstrap4.min.css')}}" rel="stylesheet" type="text/css" />
+        <!-- Responsive datatable examples -->
+        <link href="{{url_for('static', filename='assets/plugins/datatables/responsive.bootstrap4.min.css')}}" rel="stylesheet" type="text/css" /> 
+        <link href="{{url_for('static', filename='assets/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css')}}" rel="stylesheet">
+        <link href="{{url_for('static', filename='assets/plugins/select2/select2.min.css')}}" rel="stylesheet" type="text/css"/>
+        <!-- DateTime -->
+        <link href="{{url_for('static', filename='assets/plugins/timepicker/bootstrap-material-datetimepicker.css')}}" rel="stylesheet">
+        
+        <link href="{{url_for('static', filename='assets/plugins/RWD-Table-Patterns/dist/css/rwd-table.min.css')}}" rel="stylesheet" type="text/css" media="screen">
+
+        <!-- Dropzone css -->
+        <link href="{{url_for('static', filename='assets/plugins/dropzone/dist/dropzone.css')}}" rel="stylesheet" type="text/css">
+        <link href="{{url_for('static', filename='assets/plugins/dropify/css/dropify.min.css')}}" rel="stylesheet">
+
+        <link href="{{url_for('static', filename='assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css">
+        <link href="{{url_for('static', filename='assets/css/icons.css')}}" rel="stylesheet" type="text/css">
+        <link href="{{url_for('static', filename='assets/css/style.css')}}" rel="stylesheet" type="text/css">
+        <script src="{{url_for('static', filename='assets/js/fonction_calcul.js')}}"></script> 
+        <script src="{{url_for('static', filename='assets/js/bootstrapPicker.js')}}"></script>
+{#        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js"></script>#}
+    </head>
+    <body>
+
+        <!-- Loader -->
+        <div id="preloader"><div id="status"><div class="spinner"></div></div></div>
+
+        <!-- Navigation Bar-->
+        <header id="topnav">
+            <div class="topbar-main">
+                <div class="container-fluid">
+                    <!-- Logo container-->
+                    <div class="logo">
+                        <a href="{{url_for('cr.suivi_by_cr')}}" class="logo">
+                            <h2 style="color: #328f8e;">Sonatel</h2>
+                        </a>
+                    </div>
+                    <!-- End Logo container-->
+                    <div class="menu-extras topbar-custom">
+                        <ul class="list-inline float-right mb-0">                         
+                            <li class="list-inline-item dropdown notification-list hide-phone">
+                                <h4 style="text-align: center;color: #ee7527;font-style: italic;margin-top: 20px; margin-bottom: 0px;">{{ departement }}/{{entite}}</h4>
+                            </li>
+                            <li class="menu-item list-inline-item">
+                                <!-- Mobile menu toggle-->
+                                <a class="navbar-toggle nav-link">
+                                    <div class="lines">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                </a>
+                                <!-- End mobile menu toggle-->
+                            </li>
+                        </ul>       
+                    </div>
+                    <!-- end menu-extras -->
+                    <div class="clearfix"></div>
+                </div> <!-- end container -->
+            </div>
+            <!-- end topbar-main -->
+
+            <!-- MENU Start -->
+            <div class="navbar-custom">
+                <div class="container-fluid">
+                    <div id="navigation">
+                        <!-- Navigation Menu-->
+                        <ul class="navigation-menu text-center">
+                            <li class="has-submenu {{ ' active' if active_page == 'missions' else '' }}">
+                                <a href="#"><i class="mdi mdi-airplay"></i><b>TB {{entite}}</b></a>
+                                <ul class="submenu">
+                                    {% if role == True %}
+                                     <li>
+                                        <a href="{{url_for('cr.create_mission')}}">Créer une mission</a>
+                                    </li>
+                                     {% endif %}
+                                    <li>
+                                        <a href="{{url_for('cr.missions_cr')}}">Liste des missions</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{url_for('cr.activites_cr')}}">Liste des activités</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="has-submenu {{ ' active' if active_page == 'suivi' else '' }}">
+                                <a href="{{url_for('cr.suivi_by_cr')}}"><i class="mdi mdi-eye"></i><b>Suivi {{entite}}</b></a>
+                            </li>
+                            <li class="has-submenu {{ ' active' if active_page == 'codir' else '' }}">
+                                <a href="{{url_for('codir.reporting_codir_cr')}}"><i class="mdi mdi-chart-areaspline"></i><b>Reporting Codir</b></a>
+                            </li>
+                            <li class="has-submenu">
+                                <a href="{{url_for('rapp_cr.liste_rapport_cr')}}"><i class="mdi mdi-library-books"></i><b>Rapports</b></a>
+                            </li>
+                            <li class="has-submenu">
+                                <a><i class="mdi mdi-settings"></i><b>Paramètres</b></a>
+                                <ul class="submenu">
+                                    <li><a href="{{url_for('deconnexion')}}">Se déconnecter</a></li>  
+                                </ul>                           
+                            </li>
+                        </ul>
+                        <!-- End navigation menu -->
+                    </div> <!-- end #navigation -->
+                </div> <!-- end container -->
+            </div> <!-- end navbar-custom -->
+        </header>
+        <!-- End Navigation Bar-->
+
+        <div class="wrapper">
+            <div class="container-fluid">
+                <!-- Page-Title -->
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="page-title-box" style="padding-bottom: 10px;">
+                            <div class="btn-group pull-right">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title end breadcrumb -->
+                {%block corps%} {%endblock%}
+            </div> <!-- end container -->
+        </div>
+        <!-- end wrapper -->
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        © 2020 Copyright - ARQ/AI - TEAM ANALYTICS.
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- End Footer -->
+        {% include 'code_temporaire.html' %}
+        <!-- jQuery  -->
+        <script src="{{url_for('static', filename='assets/js/popper.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/js/bootstrap.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/js/modernizr.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/js/waves.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/js/jquery.nicescroll.js')}}"></script>
+
+        <!-- App js -->
+        <script src="{{url_for('static', filename='assets/js/app.js')}}"></script>
+        <!-- Required datatable js -->
+        <script src="{{url_for('static', filename='assets/plugins/datatables/jquery.dataTables.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/plugins/datatables/dataTables.bootstrap4.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/plugins/datatables/dataTables.buttons.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/plugins/datatables/buttons.bootstrap4.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/plugins/datatables/jszip.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/plugins/datatables/pdfmake.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/plugins/datatables/vfs_fonts.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/plugins/datatables/buttons.html5.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/plugins/datatables/buttons.print.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/plugins/datatables/buttons.colVis.min.js')}}"></script>
+       
+        <script src="{{url_for('static', filename='assets/plugins/datatables/dataTables.responsive.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/plugins/datatables/responsive.bootstrap4.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/pages/datatables.init.js')}}"></script> 
+ 
+        <!-- Plugins js -->
+        <script src="{{url_for('static', filename='assets/plugins/timepicker/moment.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/plugins/timepicker/bootstrap-material-datetimepicker.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/plugins/clockpicker/jquery-clockpicker.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/plugins/colorpicker/jquery-asColorPicker.min.js')}}"></script>
+
+
+        <script src="{{url_for('static', filename='assets/plugins/select2/select2.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/plugins/bootstrap-touchspin/js/jquery.bootstrap-touchspin.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js')}}"></script>
+
+        <script src="{{url_for('static', filename='assets/pages/form-advanced.js')}}"></script> 
+
+        <script src="{{url_for('static', filename='assets/js/jquery.bootstrap-growl.min.js')}}"></script>
+        <!-- Dropzone js -->
+        <script src="{{url_for('static', filename='assets/plugins/dropzone/dist/dropzone.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/plugins/dropify/js/dropify.min.js')}}"></script>
+        <script src="{{url_for('static', filename='assets/pages/upload.init.js')}}"></script>
+        <script src="/static/assets/js/jquery.bootstrap-growl.min.js"></script>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category=="danger" %}     
+                        <script>
+                            setTimeout(function() {
+                                $.bootstrapGrowl("{{message}}", {
+                                    type: 'danger',
+                                    position:"top",
+                                    align: 'center',
+                                    width:"auto"
+                                });
+                                
+                            }, 500);
+
+                        </script>    
+                    {%else%}
+                        <script>
+                            setTimeout(function() {
+                                $.bootstrapGrowl("{{message}}", {
+                                    type: 'success',
+                                    position:"top",
+                                    align: 'center',
+                                    width:"auto"
+                                });
+                            }, 500);
+                        </script>    
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </body>
+</html>
